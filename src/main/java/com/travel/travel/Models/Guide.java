@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "hotels")
+@Table(name = "guides")
 
-public class Hotel {
+public class Guide {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -16,6 +16,6 @@ public class Hotel {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "age")
+    private int age;
 }
