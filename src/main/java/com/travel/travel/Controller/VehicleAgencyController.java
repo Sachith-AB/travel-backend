@@ -56,4 +56,16 @@ public class VehicleAgencyController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateAgency(@PathVariable Long id, @RequestBody VehicleAgency agency) throws Exception {
+        vehicleAgencyService.updateAgency(id, agency);
+        return ResponseEntity.ok("OK");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAgency(@PathVariable Long id) {
+        vehicleAgencyService.deleteAgency(id);
+        return ResponseEntity.noContent().build(); // HTTP 204
+    }
 }
