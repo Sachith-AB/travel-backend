@@ -11,5 +11,10 @@ public interface VehicleAgencyService {
     List<VehicleAgency> getVehicleAgencies() throws  Exception;
 
     VehicleAgency getAgenciesByUserId(Long userId) throws Exception;
+
     Optional<VehicleAgency> getAgencyById(Long id) throws Exception;
+
+    void updateAgency(Long id, VehicleAgency updatedAgency) throws Exception;
+
+    void deleteAgency(Long id);
 }
