@@ -25,6 +25,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "doc_id")
+    private String docId;
+
     @ElementCollection
     @CollectionTable(name = "profile_pictures", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "profile_picture")
@@ -33,7 +36,7 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @Column(name = "isDeleted")
+    @Column(name = "isDeleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isDeleted;
 
     @CreationTimestamp
