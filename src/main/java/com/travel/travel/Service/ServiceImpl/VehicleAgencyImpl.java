@@ -42,12 +42,12 @@ public class VehicleAgencyImpl implements VehicleAgencyService {
         VehicleAgency existing = vehicleAgencyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Agency not found with ID: " + id));
 
-        existing.setAgencyName(updatedAgency.getAgencyName());
-        existing.setStreet(updatedAgency.getStreet());
-        existing.setCity(updatedAgency.getCity());
-        existing.setDistrict(updatedAgency.getDistrict());
-        existing.setProvince(updatedAgency.getProvince());
-        existing.setDescription(updatedAgency.getDescription());
+//            existing.setAgencyName(updatedAgency.getAgencyName());
+//            existing.setStreet(updatedAgency.getStreet());
+//            existing.setCity(updatedAgency.getCity());
+//            existing.setDistrict(updatedAgency.getDistrict());
+//            existing.setProvince(updatedAgency.getProvince());
+//            existing.setDescription(updatedAgency.getDescription());
     }
 
     @Override
