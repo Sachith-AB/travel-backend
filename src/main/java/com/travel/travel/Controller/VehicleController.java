@@ -35,6 +35,17 @@ public class VehicleController {
         return ResponseEntity.ok(vehicle);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateVehicle(@PathVariable Long id, @RequestBody Vehicle vehicle) {
+        try {
+            Vehicle updatedVehicle = vehicleService.updateVehicle(id, vehicle);
+            return ResponseEntity.ok(updatedVehicle);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Error: " + e.getMessage());
+        }
+    }
+
+
 
 }
 

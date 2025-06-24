@@ -9,4 +9,7 @@ public interface VehicleService {
     Vehicle registerVehicle(Vehicle vehicle) throws Exception;
 
     Vehicle getVehicleById(Long id) ;
+
+    Vehicle updateVehicle(Long id, Vehicle vehicle) throws Exception;
+
 }
