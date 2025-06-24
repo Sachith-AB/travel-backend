@@ -15,5 +15,8 @@ public interface VehicleService {
 
     List<Vehicle> getVehiclesByAgencyId(Long agencyId);
 
+    void deleteVehicle(Long id) throws Exception;
+
+
 
 }
