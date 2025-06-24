@@ -55,6 +55,17 @@ public class VehicleController {
         return ResponseEntity.ok(vehicles);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteVehicle(@PathVariable Long id) {
+        try {
+            vehicleService.deleteVehicle(id);
+            return ResponseEntity.ok("Vehicle deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Error: " + e.getMessage());
+        }
+    }
+
+
 
 
 

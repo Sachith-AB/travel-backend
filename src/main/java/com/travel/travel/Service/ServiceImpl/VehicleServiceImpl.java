@@ -50,6 +50,13 @@ public class VehicleServiceImpl implements VehicleService {
     public List<Vehicle> getVehiclesByAgencyId(Long agencyId) {
         return vehicleRepository.findByAgencyId(agencyId);
     }
+    @Override
+    public void deleteVehicle(Long id) throws Exception {
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new Exception("Vehicle not found with ID: " + id));
+        vehicleRepository.delete(vehicle);
+    }
+
 
 
 
