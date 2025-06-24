@@ -28,11 +28,6 @@ public class Vehicle {
     private String pricePerKilometer;
 
     @ElementCollection
-    @CollectionTable(name = "hotel_license_photos", joinColumns = @JoinColumn(name = "hotel_id"))
-    @Column(name = "license_photo_url")
-    private List<String> licensePhoto;
-
-    @ElementCollection
     @CollectionTable(name = "vehicle_images", joinColumns = @JoinColumn(name = "vehicle_id"))
     @Column(name = "image_url")
     private List<String> images;
@@ -51,4 +46,8 @@ public class Vehicle {
 
     @Column(name = "capacity")
     private int capacity;
+
+    @ManyToOne
+    @JoinColumn(name = "agency_id") // This will create the foreign key
+    private VehicleAgency agency;
 }
