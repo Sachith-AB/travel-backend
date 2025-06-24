@@ -8,6 +8,7 @@ import com.travel.travel.Service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +45,12 @@ public class VehicleServiceImpl implements VehicleService {
 
         return vehicleRepository.save(existingVehicle);
     }
+
+    @Override
+    public List<Vehicle> getVehiclesByAgencyId(Long agencyId) {
+        return vehicleRepository.findByAgencyId(agencyId);
+    }
+
 
 
 
