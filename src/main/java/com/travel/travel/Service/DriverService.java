@@ -21,5 +21,7 @@ public interface DriverService {
     Driver getDriverByUserId(Long userId);
 
     Driver updateDriver(Long id, Driver updatedDriver) throws Exception;
+
+    void deleteDriver(Long id) throws Exception;
 }
 

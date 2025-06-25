@@ -60,4 +60,11 @@ public class DriverServiceImpl implements DriverService {
 
         return driverRepository.save(existingDriver);
     }
+
+    @Override
+    public void deleteDriver(Long id) throws Exception {
+        Driver driver = driverRepository.findById(id)
+                .orElseThrow(() -> new Exception("Driver not found with ID: " + id));
+        driverRepository.delete(driver);
+    }
 }
