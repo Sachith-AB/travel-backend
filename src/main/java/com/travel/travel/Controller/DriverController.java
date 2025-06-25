@@ -65,6 +65,16 @@ public class DriverController {
         }
         return ResponseEntity.ok(drivers);
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getDriverByUserId(@PathVariable Long userId) {
+        Driver driver = driverService.getDriverByUserId(userId);
+        if (driver == null) {
+            return ResponseEntity.status(404).body("Driver not found for User ID: " + userId);
+        }
+        return ResponseEntity.ok(driver);
+    }
+
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<?> updateDriver(@PathVariable Long id, @RequestBody Driver driver) {

@@ -39,4 +39,9 @@ public class DriverServiceImpl implements DriverService {
     public List<Driver> getDriversByAgencyId(Long agencyId) {
         return driverRepository.findByAgency_Id(agencyId);
     }
+
+    @Override
+    public Driver getDriverByUserId(Long userId) {
+        return driverRepository.findByUser_Id(userId);
+    }
 }
