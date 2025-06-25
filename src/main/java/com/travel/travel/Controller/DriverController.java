@@ -85,14 +85,14 @@ public class DriverController {
         }
     }
 
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteDriver(@PathVariable Long id) {
-//        try {
-//            driverService.deleteDriver(id);
-//            return ResponseEntity.ok("Driver deleted successfully.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(404).body("Error: " + e.getMessage());
-//        }
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDriver(@PathVariable Long id) {
+        try {
+            driverService.deleteDriver(id);
+            return ResponseEntity.ok("Driver deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Error: " + e.getMessage());
+        }
+    }
+
 }
