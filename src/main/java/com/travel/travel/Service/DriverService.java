@@ -19,5 +19,7 @@ public interface DriverService {
     List<Driver> getDriversByAgencyId(Long agencyId);
 
     Driver getDriverByUserId(Long userId);
+
+    Driver updateDriver(Long id, Driver updatedDriver) throws Exception;
 }
 
