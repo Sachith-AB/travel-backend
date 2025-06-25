@@ -25,6 +25,16 @@ public class DriverController {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllDrivers() {
+        List<Driver> drivers = driverService.getAllDrivers();
+        if (drivers.isEmpty()) {
+            return ResponseEntity.status(404).body("No drivers found.");
+        }
+        return ResponseEntity.ok(drivers);
+    }
+
+
 //    @GetMapping("/{id}")
 //    public ResponseEntity<?> getDriverById(@PathVariable Long id) {
 //        Driver driver = driverService.getDriverById(id);
