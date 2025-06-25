@@ -34,4 +34,9 @@ public class DriverServiceImpl implements DriverService {
     public Page<Driver> getAllDrivers(Pageable pageable) {
         return driverRepository.findAll(pageable);
     }
+
+    @Override
+    public List<Driver> getDriversByAgencyId(Long agencyId) {
+        return driverRepository.findByAgency_Id(agencyId);
+    }
 }

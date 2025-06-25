@@ -56,15 +56,15 @@ public class DriverController {
         Page<Driver> drivers = driverService.getAllDrivers(pageable);
         return ResponseEntity.ok(drivers);
     }
-//
-//    @GetMapping("/agency/{agencyId}")
-//    public ResponseEntity<?> getDriversByAgency(@PathVariable Long agencyId) {
-//        List<Driver> drivers = driverService.getDriversByAgencyId(agencyId);
-//        if (drivers.isEmpty()) {
-//            return ResponseEntity.status(404).body("No drivers found for agency ID: " + agencyId);
-//        }
-//        return ResponseEntity.ok(drivers);
-//    }
+
+    @GetMapping("/agency/{agencyId}")
+    public ResponseEntity<?> getDriversByAgency(@PathVariable Long agencyId) {
+        List<Driver> drivers = driverService.getDriversByAgencyId(agencyId);
+        if (drivers.isEmpty()) {
+            return ResponseEntity.status(404).body("No drivers found for agency ID: " + agencyId);
+        }
+        return ResponseEntity.ok(drivers);
+    }
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<?> updateDriver(@PathVariable Long id, @RequestBody Driver driver) {

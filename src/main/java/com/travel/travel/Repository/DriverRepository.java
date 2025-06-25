@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DriverRepository extends JpaRepository<Driver,Long> {
-     Page<Driver> findAll(Pageable pageable);//Future pageable wll apply page=0,size=5
+    Page<Driver> findAll(Pageable pageable);//Future pageable wll apply page=0,size=5
+    List<Driver> findByAgency_Id(Long agencyId);
+
 
 
 
