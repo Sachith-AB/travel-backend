@@ -44,4 +44,20 @@ public class DriverServiceImpl implements DriverService {
     public Driver getDriverByUserId(Long userId) {
         return driverRepository.findByUser_Id(userId);
     }
+
+    @Override
+    public Driver updateDriver(Long id, Driver updatedDriver) throws Exception {
+        Driver existingDriver = driverRepository.findById(id)
+                .orElseThrow(() -> new Exception("Driver not found with ID: " + id));
+
+//        existingDriver.setAge(updatedDriver.getAge());
+//        existingDriver.setExperience(updatedDriver.getExperience());
+//        existingDriver.setDriverLicenseNumber(updatedDriver.getDriverLicenseNumber());
+//        existingDriver.setDriverLicensePhoto(updatedDriver.getDriverLicensePhoto());
+//        existingDriver.setLicenseExpiryDate(updatedDriver.getLicenseExpiryDate());
+//        existingDriver.setAgency(updatedDriver.getAgency());
+//        existingDriver.setUser(updatedDriver.getUser());
+
+        return driverRepository.save(existingDriver);
+    }
 }

@@ -75,16 +75,16 @@ public class DriverController {
         return ResponseEntity.ok(driver);
     }
 
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateDriver(@PathVariable Long id, @RequestBody Driver driver) {
-//        try {
-//            Driver updated = driverService.updateDriver(id, driver);
-//            return ResponseEntity.ok(updated);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(404).body("Error: " + e.getMessage());
-//        }
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateDriver(@PathVariable Long id, @RequestBody Driver updatedDriver) {
+        try {
+            Driver driver = driverService.updateDriver(id, updatedDriver);
+            return ResponseEntity.ok(driver);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Error: " + e.getMessage());
+        }
+    }
+
 //
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> deleteDriver(@PathVariable Long id) {
