@@ -1,11 +1,22 @@
 // src/main/java/com/travel/travel/Models/Hotel.java
 package com.travel.travel.Models;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
@@ -22,11 +33,16 @@ public class Hotel {
     @Column(name = "street")
     private String street;
 
+    @Column(name = "is_verified")
+    private Boolean isVerified;
+
     @Column(name = "city")
     private String city;
 
     @Column(name = "district")
     private String district;
+
+    
 
     @Column(name = "province")
     private String province;
