@@ -1,13 +1,16 @@
 // src/main/java/com/travel/travel/Models/Hotel.java
 package com.travel.travel.Models;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "hotels")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +34,9 @@ public class Hotel {
     @Column(name = "registration_no")
     private String registrationNo;
 
+    @Column(name = "created_at",updatable = false)
+    private LocalDateTime createdAt;
+
     @ElementCollection
     @CollectionTable(name = "hotel_license_photos", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(name = "license_photo_url")
@@ -51,4 +57,8 @@ public class Hotel {
     @CollectionTable(name = "hotel_amenities", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(name = "amenity")
     private List<String> amenities;
+
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hotel", "hibernateLazyInitializer", "handler"})
+    private List<Room> rooms;
 }

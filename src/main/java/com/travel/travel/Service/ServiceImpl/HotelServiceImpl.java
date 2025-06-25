@@ -16,4 +16,10 @@ public class HotelServiceImpl implements HotelService {
     public Hotel registerHotel(Hotel hotel) throws Exception {
         return hotelRepository.save(hotel);
     }
+
+
+    @Override
+    public Hotel getHotelById(Long id) {
+        return hotelRepository.findById(id).orElse(null);
+    }
 }
