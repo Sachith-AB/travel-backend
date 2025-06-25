@@ -6,6 +6,8 @@ import com.travel.travel.Service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DriverServiceImpl implements DriverService {
 
@@ -14,5 +16,10 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public Driver registerDriver(Driver driver) throws Exception {
         return driverRepository.save(driver);
+    }
+
+    @Override
+    public List<Driver> getAllDrivers() {
+        return driverRepository.findAll();
     }
 }
