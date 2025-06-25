@@ -3,6 +3,9 @@ package com.travel.travel.Controller;
 import com.travel.travel.Models.Driver;
 import com.travel.travel.Service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,14 +38,24 @@ public class DriverController {
     }
 
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getDriverById(@PathVariable Long id) {
-//        Driver driver = driverService.getDriverById(id);
-//        if (driver == null) {
-//            return ResponseEntity.status(404).body("Driver not found with ID: " + id);
-//        }
-//        return ResponseEntity.ok(driver);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDriverById(@PathVariable Long id) {
+        Driver driver = driverService.getDriverById(id);
+        if (driver == null) {
+            return ResponseEntity.status(404).body("Driver not found with ID: " + id);
+        }
+        return ResponseEntity.ok(driver);
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<?> getAllDriversPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Driver> drivers = driverService.getAllDrivers(pageable);
+        return ResponseEntity.ok(drivers);
+    }
 //
 //    @GetMapping("/agency/{agencyId}")
 //    public ResponseEntity<?> getDriversByAgency(@PathVariable Long agencyId) {

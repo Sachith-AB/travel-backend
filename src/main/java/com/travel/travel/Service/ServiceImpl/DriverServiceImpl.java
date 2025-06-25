@@ -4,6 +4,8 @@ import com.travel.travel.Models.Driver;
 import com.travel.travel.Repository.DriverRepository;
 import com.travel.travel.Service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,5 +23,15 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public List<Driver> getAllDrivers() {
         return driverRepository.findAll();
+    }
+
+    @Override
+    public Driver getDriverById(Long id) {
+        return driverRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<Driver> getAllDrivers(Pageable pageable) {
+        return driverRepository.findAll(pageable);
     }
 }
