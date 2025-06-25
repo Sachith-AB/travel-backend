@@ -16,6 +16,9 @@ public interface DriverService {
 
     Page<Driver> getAllDrivers(Pageable pageable);
 
+    List<Driver> getDriversByAgencyId(Long agencyId);
+
+
 
 
 }
