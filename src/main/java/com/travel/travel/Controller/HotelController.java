@@ -22,4 +22,14 @@ public class HotelController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+
+    @GetMapping("/{hotelId}")
+    public ResponseEntity<?> getHotelWithRooms(@PathVariable Long hotelId) {
+        Hotel hotel = hotelService.getHotelById(hotelId);
+        if (hotel == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(hotel);
+    }
 }
