@@ -18,8 +18,6 @@ public interface DriverService {
 
     List<Driver> getDriversByAgencyId(Long agencyId);
 
-
-
-
+    Driver getDriverByUserId(Long userId);
 }
 

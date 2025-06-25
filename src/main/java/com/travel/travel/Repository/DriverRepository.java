@@ -12,6 +12,5 @@ public interface DriverRepository extends JpaRepository<Driver,Long> {
     List<Driver> findByAgency_Id(Long agencyId);
 
 
-
-
+    Driver findByUser_Id(Long userId);
 }
