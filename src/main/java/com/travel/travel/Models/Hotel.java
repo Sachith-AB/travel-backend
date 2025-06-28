@@ -1,13 +1,27 @@
 // src/main/java/com/travel/travel/Models/Hotel.java
 package com.travel.travel.Models;
-
-import jakarta.persistence.*;
-import lombok.Data;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "hotels")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,17 +33,25 @@ public class Hotel {
     @Column(name = "street")
     private String street;
 
+    @Column(name = "is_verified")
+    private Boolean isVerified;
+
     @Column(name = "city")
     private String city;
 
     @Column(name = "district")
     private String district;
 
+    
+
     @Column(name = "province")
     private String province;
 
     @Column(name = "registration_no")
     private String registrationNo;
+
+    @Column(name = "created_at",updatable = false)
+    private LocalDateTime createdAt;
 
     @ElementCollection
     @CollectionTable(name = "hotel_license_photos", joinColumns = @JoinColumn(name = "hotel_id"))
@@ -51,4 +73,8 @@ public class Hotel {
     @CollectionTable(name = "hotel_amenities", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(name = "amenity")
     private List<String> amenities;
+
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hotel", "hibernateLazyInitializer", "handler"})
+    private List<Room> rooms;
 }
