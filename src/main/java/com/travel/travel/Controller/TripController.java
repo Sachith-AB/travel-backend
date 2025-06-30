@@ -2,9 +2,6 @@ package com.travel.travel.Controller;
 
 
 
-import com.travel.travel.Models.Trip;
-import com.travel.travel.Service.TripService;
-
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.travel.travel.Models.Trip;
+import com.travel.travel.Service.TripService;
+
 @RestController
 @RequestMapping("/api/trips")
 public class TripController {
@@ -23,13 +23,13 @@ public class TripController {
     @Autowired
     TripService tripService;
 
-    @PostMapping("")
-    ResponseEntity<?> createTrip(@RequestBody Trip trip) throws Exception {
-        try{
-            tripService.createTrip(trip);
-            return ResponseEntity.ok("OK");
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+    @PostMapping
+    public ResponseEntity<?> createTrip(@RequestBody Trip trip) {
+        try {
+            Trip savedTrip = tripService.createTrip(trip);
+            return ResponseEntity.ok(savedTrip);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
