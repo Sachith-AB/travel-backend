@@ -1,4 +1,4 @@
-package com.travel.travel.Dtos;
+package com.travel.travel.RequestDto;
 
 import com.travel.travel.Models.Enum.TripStatus;
 import lombok.Data;
