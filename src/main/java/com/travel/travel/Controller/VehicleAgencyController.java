@@ -40,7 +40,7 @@ public class VehicleAgencyController {
     @GetMapping("/user/{userId}")
     public  ResponseEntity<VehicleAgency> getVehicleAgencyByUserId(@PathVariable Long userId){
         try {
-           VehicleAgency agency = vehicleAgencyService.getAgenciesByUserId(userId);
+            VehicleAgency agency = vehicleAgencyService.getAgenciesByUserId(userId);
             return ResponseEntity.ok(agency);
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
