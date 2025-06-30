@@ -1,14 +1,30 @@
 package com.travel.travel.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.travel.travel.Models.Enum.TripStatus;
-import jakarta.persistence.*;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.travel.travel.Models.Enum.TripStatus;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
@@ -31,12 +47,15 @@ public class Trip {
     private String pickupLocation;
 
     @Column(name = "trip_start_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date tripStartDate;
 
     @Column(name = "trip_end_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date tripEndDate;
 
     @Column(name = "start_time")
+    @JsonFormat(pattern = "HH:mm:ss")
     private Time startTime;
 
     @ElementCollection
@@ -51,17 +70,17 @@ public class Trip {
     private Integer numberOfKids;
 
     @Column(name = "estimate_duration")
-    private String estimateDuration; // min
+    private String estimateDuration; 
 
     @Column(name = "distance_km")
-    private Integer distanceKm;  // km
+    private Integer distanceKm;  
 
     @Column(name = "trip_status")
     @Enumerated(EnumType.STRING)
     private TripStatus tripStatus;
 
     public Trip() {
-        this.tripStatus = TripStatus.pending; // default value
+        this.tripStatus = TripStatus.pending; 
     }
 
 
@@ -79,27 +98,24 @@ public class Trip {
     //private Guide acceptedGuide;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "trip"})
     @JoinColumn(name = "selected_vehicle_agency", referencedColumnName = "id")
     private VehicleAgency selectedVehicleAgency;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "trip"})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "selected_vehicle", referencedColumnName = "id")
     private Vehicle selectedVehicle;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "trip"})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "selected_hotel", referencedColumnName = "id")
     private Hotel selectedHotel;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "trip_selected_rooms",
-//            joinColumns = @JoinColumn(name = "trip_id"),
-//            inverseJoinColumns = @JoinColumn(name = "room_id")
-//    )
-//    private List<Room> selectedRooms;
+    @ManyToMany
+    @JoinTable(
+            name = "trip_selected_rooms",
+            joinColumns = @JoinColumn(name = "trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "room_id")
+    )
+    private List<Room> selectedRooms;
 
     @Column(name = "base_price", precision = 10, scale = 2)
     private BigDecimal basePrice;
