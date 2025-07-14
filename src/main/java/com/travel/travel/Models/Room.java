@@ -40,6 +40,9 @@ public class Room {
     @Column(name = "bed_types")
     private String bedTypes;
 
+    @Column(name = "description")
+    private String description;
+
 
 
     @Column(name = "price_per_night")
