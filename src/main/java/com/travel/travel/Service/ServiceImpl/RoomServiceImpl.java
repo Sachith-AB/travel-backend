@@ -54,6 +54,7 @@ public class RoomServiceImpl implements RoomService {
             r.setPricePerNight(room.getPricePerNight());
             r.setBedTypes(room.getBedTypes());
             r.setMaxGuests(room.getMaxGuests());
+            r.setDescription(room.getDescription());
             r.setImages(room.getImages());
             r.setAmenities(room.getAmenities());
             r.setAvailability(room.getAvailability());
