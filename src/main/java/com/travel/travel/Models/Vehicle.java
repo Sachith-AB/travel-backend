@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,6 +28,21 @@ public class Vehicle {
 
     @Column(name = "price_per_kilometer")
     private String pricePerKilometer;
+
+    @Column(name = "base_price")
+    private BigDecimal basePrice;
+
+    @Column(name = "insurance_number")
+    private String insuranceNumber;
+
+    @Column(name = "insurance_expiry_date")
+    private LocalDate insuranceExpiryDate;
+
+    @Column(name = "vehicle_model")
+    private String vehicleModel;
+
+    @Column(name = "is_verified")
+    private boolean isVerified;
 
     @ElementCollection
     @CollectionTable(name = "vehicle_images", joinColumns = @JoinColumn(name = "vehicle_id"))
