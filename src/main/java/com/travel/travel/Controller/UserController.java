@@ -44,4 +44,15 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/public/{docId}")
+    public ResponseEntity<Optional<User>> getUserByPublicId(@PathVariable String docId) {
+        try {
+            Optional<User> user = userService.findByPublicId(docId);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
