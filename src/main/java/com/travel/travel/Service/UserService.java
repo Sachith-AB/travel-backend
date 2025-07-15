@@ -10,4 +10,6 @@ public interface UserService {
     Optional<User> getUserById(Long id) throws Exception;
 
     void updateUser(User user, Long id) throws Exception;
+
+    Optional<User> findByPublicId(String docId) throws Exception;
 }
