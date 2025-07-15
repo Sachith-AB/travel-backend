@@ -1,16 +1,17 @@
 package com.travel.travel.Service.ServiceImpl;
 
-import com.travel.travel.Models.Room;
-import com.travel.travel.Models.Hotel;
-import com.travel.travel.Repository.RoomRepository;
-import com.travel.travel.Repository.HotelRepository;
-import com.travel.travel.Service.RoomService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.travel.travel.Models.Hotel;
+import com.travel.travel.Models.Room;
+import com.travel.travel.Repository.HotelRepository;
+import com.travel.travel.Repository.RoomRepository;
+import com.travel.travel.Service.RoomService;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -51,6 +52,9 @@ public class RoomServiceImpl implements RoomService {
             Room r = existing.get();
             r.setRoomType(room.getRoomType());
             r.setPricePerNight(room.getPricePerNight());
+            r.setBedTypes(room.getBedTypes());
+            r.setMaxGuests(room.getMaxGuests());
+            r.setDescription(room.getDescription());
             r.setImages(room.getImages());
             r.setAmenities(room.getAmenities());
             r.setAvailability(room.getAvailability());

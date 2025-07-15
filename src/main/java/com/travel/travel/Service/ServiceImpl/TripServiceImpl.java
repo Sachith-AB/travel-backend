@@ -36,7 +36,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public Trip createTrip(Trip trip) throws Exception {
-        // Attach managed entities
+        
         if (trip.getUser() != null && trip.getUser().getId() != null) {
             trip.setUser(userRepository.findById(trip.getUser().getId())
                 .orElseThrow(() -> new Exception("User not found")));
