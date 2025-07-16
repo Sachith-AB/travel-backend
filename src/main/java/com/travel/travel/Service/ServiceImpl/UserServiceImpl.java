@@ -38,4 +38,9 @@ public class UserServiceImpl implements UserService {
         existing.setIsDeleted(user.getIsDeleted());
 
     }
+
+    @Override
+    public Optional<User> findByPublicId(String docId) throws Exception {
+        return userRepository.findByDocId(docId);
+    }
 }
