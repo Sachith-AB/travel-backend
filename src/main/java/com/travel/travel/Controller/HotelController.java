@@ -49,4 +49,9 @@ public class HotelController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAllHotels() {
+        return ResponseEntity.ok(hotelService.getAllHotels());
+    }
 }
