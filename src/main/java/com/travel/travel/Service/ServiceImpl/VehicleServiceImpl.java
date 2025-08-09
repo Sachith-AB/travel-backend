@@ -1,15 +1,14 @@
 package com.travel.travel.Service.ServiceImpl;
 
 
-import com.travel.travel.Models.Vehicle;
-import com.travel.travel.Models.VehicleAgency;
-import com.travel.travel.Repository.VehicleRepository;
-import com.travel.travel.Service.VehicleService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.travel.travel.Models.Vehicle;
+import com.travel.travel.Repository.VehicleRepository;
+import com.travel.travel.Service.VehicleService;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
@@ -50,6 +49,12 @@ public class VehicleServiceImpl implements VehicleService {
     public List<Vehicle> getVehiclesByAgencyId(Long agencyId) {
         return vehicleRepository.findByAgencyId(agencyId);
     }
+
+    @Override
+    public List<Vehicle> getAllVehicles() {
+        return vehicleRepository.findAll();
+    }
+
     @Override
     public void deleteVehicle(Long id) throws Exception {
         Vehicle vehicle = vehicleRepository.findById(id)

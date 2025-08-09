@@ -105,9 +105,17 @@ public class Trip {
     @JoinColumn(name = "selected_vehicle", referencedColumnName = "id")
     private Vehicle selectedVehicle;
 
+    @ManyToMany
+    @JoinTable(
+        name = "trip_selected_hotels",
+        joinColumns = @JoinColumn(name = "trip_id"),
+        inverseJoinColumns = @JoinColumn(name = "hotel_id")
+    )
+    private List<Hotel> selectedHotels;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "selected_hotel", referencedColumnName = "id")
-    private Hotel selectedHotel;
+    @JoinColumn(name = "guides", referencedColumnName = "id")
+    private Guid selectedGuid ;
 
     @ManyToMany
     @JoinTable(
@@ -122,4 +130,103 @@ public class Trip {
 
     @Column(name = "total_fare", precision = 10, scale = 2)
     private BigDecimal totalFare;
+
+   
+    @Column(name = "full_name")
+    private String fullName;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "nic_number")
+    private String nicNumber;
+
+    @Column(name = "optional_contact")
+    private String optionalContact;
+
+    @Column(name = "special_requests")
+    private String specialRequests;
+
+    @Column(name = "age_group")
+    private String ageGroup;
+
+    @Column(name = "occupation")
+    private String occupation;
+
+    @Column(name = "travel_experience")
+    private String travelExperience;
+
+    @Column(name = "referral_source")
+    private String referralSource;
+
+    @Column(name = "destination")
+    private String destination;
+
+    @Column(name = "duration")
+    private String duration;
+
+    @Column(name = "travel_style")
+    private String travelStyle;
+
+    @Column(name = "group_type")
+    private String groupType;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_interests", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "interest")
+    private List<String> interests;
+
+    @Column(name = "accommodation_preference")
+    private String accommodationPreference;
+
+    @Column(name = "budget_range")
+    private String budgetRange;
+
+    @Column(name = "activity_level")
+    private String activityLevel;
+
+    @Column(name = "dining_preference")
+    private String diningPreference;
+
+    @Column(name = "itinerary", columnDefinition = "TEXT")
+    private String itineraryJson; 
+
+    @Column(name = "travel_details_json", columnDefinition = "TEXT")
+    private String travelDetailsJson;
+
+    @Column(name = "tour_preferences_json", columnDefinition = "TEXT")
+    private String tourPreferencesJson;
+
+    @Column(name = "booking_summary_json", columnDefinition = "TEXT")
+    private String bookingSummaryJson;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_guides", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "guide_id")
+    private List<Long> selectedGuideIds;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_hotels", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "hotel_id")
+    private List<Long> selectedHotelIds;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_night_hotels", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "night_hotel_id")
+    private List<Long> selectedNightHotelIds;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_night_rooms", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "night_room_id")
+    private List<Long> selectedNightRoomIds;
+
+    @Column(name = "agreed_to_terms")
+    private Boolean agreedToTerms;
 }
+
