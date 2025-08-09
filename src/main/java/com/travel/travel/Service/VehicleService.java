@@ -1,10 +1,8 @@
 package com.travel.travel.Service;
 
-import com.travel.travel.Models.Vehicle;
-import com.travel.travel.Models.VehicleAgency;
-
 import java.util.List;
-import java.util.Optional;
+
+import com.travel.travel.Models.Vehicle;
 
 public interface VehicleService {
     Vehicle registerVehicle(Vehicle vehicle) throws Exception;
@@ -17,6 +15,5 @@ public interface VehicleService {
 
     void deleteVehicle(Long id) throws Exception;
 
-
-
+    List<Vehicle> getAllVehicles();
 }

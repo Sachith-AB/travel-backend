@@ -105,9 +105,17 @@ public class Trip {
     @JoinColumn(name = "selected_vehicle", referencedColumnName = "id")
     private Vehicle selectedVehicle;
 
+    @ManyToMany
+    @JoinTable(
+        name = "trip_selected_hotels",
+        joinColumns = @JoinColumn(name = "trip_id"),
+        inverseJoinColumns = @JoinColumn(name = "hotel_id")
+    )
+    private List<Hotel> selectedHotels;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "selected_hotel", referencedColumnName = "id")
-    private Hotel selectedHotel;
+    @JoinColumn(name = "guides", referencedColumnName = "id")
+    private Guid selectedGuid ;
 
     @ManyToMany
     @JoinTable(
@@ -123,7 +131,7 @@ public class Trip {
     @Column(name = "total_fare", precision = 10, scale = 2)
     private BigDecimal totalFare;
 
-    // Additional fields for user details
+   
     @Column(name = "full_name")
     private String fullName;
 
@@ -188,5 +196,37 @@ public class Trip {
 
     @Column(name = "itinerary", columnDefinition = "TEXT")
     private String itineraryJson; 
+
+    @Column(name = "travel_details_json", columnDefinition = "TEXT")
+    private String travelDetailsJson;
+
+    @Column(name = "tour_preferences_json", columnDefinition = "TEXT")
+    private String tourPreferencesJson;
+
+    @Column(name = "booking_summary_json", columnDefinition = "TEXT")
+    private String bookingSummaryJson;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_guides", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "guide_id")
+    private List<Long> selectedGuideIds;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_hotels", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "hotel_id")
+    private List<Long> selectedHotelIds;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_night_hotels", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "night_hotel_id")
+    private List<Long> selectedNightHotelIds;
+
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_night_rooms", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "night_room_id")
+    private List<Long> selectedNightRoomIds;
+
+    @Column(name = "agreed_to_terms")
+    private Boolean agreedToTerms;
 }
 
