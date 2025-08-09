@@ -1,5 +1,7 @@
 package com.travel.travel.Service.ServiceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,5 +47,10 @@ public class HotelServiceImpl implements HotelService {
         // Do not update createdAt or rooms here
 
         return hotelRepository.save(existingHotel);
+    }
+
+    @Override
+    public List<Hotel> getAllHotels() {
+        return hotelRepository.findAll();
     }
 }
