@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.travel.travel.Models.Hotel;
 import com.travel.travel.Models.Room;
 import com.travel.travel.Models.Trip;
 import com.travel.travel.Repository.HotelRepository;
@@ -49,9 +50,13 @@ public class TripServiceImpl implements TripService {
             trip.setSelectedVehicleAgency(vehicleAgencyRepository.findById(trip.getSelectedVehicleAgency().getId())
                 .orElseThrow(() -> new Exception("Vehicle Agency not found")));
         }
-        if (trip.getSelectedHotel() != null && trip.getSelectedHotel().getId() != null) {
-            trip.setSelectedHotel(hotelRepository.findById(trip.getSelectedHotel().getId())
-                .orElseThrow(() -> new Exception("Hotel not found")));
+        if (trip.getSelectedHotels() != null && !trip.getSelectedHotels().isEmpty()) {
+            List<Hotel> managedHotels = new ArrayList<>();
+            for (Hotel hotel : trip.getSelectedHotels()) {
+                managedHotels.add(hotelRepository.findById(hotel.getId())
+                    .orElseThrow(() -> new Exception("Hotel not found")));
+            }
+            trip.setSelectedHotels(managedHotels);
         }
         if (trip.getSelectedRooms() != null && !trip.getSelectedRooms().isEmpty()) {
             List<Room> managedRooms = new ArrayList<>();
