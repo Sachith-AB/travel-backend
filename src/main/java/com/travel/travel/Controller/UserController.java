@@ -55,4 +55,23 @@ public class UserController {
         }
     }
 
+    @PostMapping("/fix-user-data")
+    public ResponseEntity<?> fixUserData() {
+        try {
+            // Update the existing user to have proper name data
+            Optional<User> existingUser = userService.getUserById(1L);
+            if (existingUser.isPresent()) {
+                User user = existingUser.get();
+                user.setFirstName("Sameemadhu");
+                user.setLastName("Guide");
+                userService.updateUser(user, 1L);
+                return ResponseEntity.ok("User data updated successfully");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
 }
