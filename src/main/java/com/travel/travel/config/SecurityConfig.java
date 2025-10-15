@@ -19,16 +19,16 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // 💥 allow preflight
-                        .requestMatchers("/**").permitAll() // all other requests
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() 
+                        .requestMatchers("/**").permitAll() 
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // Optional if you're using basic auth
+                .httpBasic(Customizer.withDefaults()); 
 
         return http.build();
     }
 
-    // Add this CORS configuration method
+    
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
