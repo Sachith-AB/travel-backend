@@ -40,3 +40,4 @@ public class GuidRequest {
     @Column(name = "status")
     private String status; 
 }
+
