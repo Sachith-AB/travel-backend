@@ -52,8 +52,11 @@ public class GuidController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Guid>> getAllGuids() {
-        return ResponseEntity.ok(guidService.getAllGuids());
+    public ResponseEntity<List<Guid>> getAllGuids(@org.springframework.web.bind.annotation.RequestParam(required = false) java.util.Map<String, String> allParams) {
+        if (allParams == null || allParams.isEmpty()) {
+            return ResponseEntity.ok(guidService.getAllGuids());
+        }
+        return ResponseEntity.ok(guidService.getAllGuidsWithFilters(allParams));
     }
 
     @PutMapping("/{id}")
