@@ -53,9 +53,28 @@ public class GuidServiceImpl implements GuidService {
         }
 
         String language = filters.getOrDefault("language", "").trim();
-        if (!language.isEmpty() && !language.equalsIgnoreCase("All Languages")) {
-            String lang = language.toLowerCase();
-            stream = stream.filter(g -> g.getLanguagesSpoken() != null && g.getLanguagesSpoken().stream().anyMatch(l -> l.toLowerCase().contains(lang)));
+        if (!language.isEmpty()) {
+            // support multiple languages passed as comma-separated (e.g. "sinhala,english")
+            String[] requested = language.toLowerCase().split(",");
+            java.util.Set<String> reqSet = java.util.Arrays.stream(requested)
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(java.util.stream.Collectors.toSet());
+
+            if (!reqSet.isEmpty()) {
+                stream = stream.filter(g -> {
+                    if (g.getLanguagesSpoken() == null) return false;
+                    for (String gl : g.getLanguagesSpoken()) {
+                        if (gl == null) continue;
+                        String gln = gl.toLowerCase().trim();
+                        for (String r : reqSet) {
+                            // prefer exact match, fall back to contains to allow variants
+                            if (gln.equals(r) || gln.contains(r)) return true;
+                        }
+                    }
+                    return false;
+                });
+            }
         }
 
         // rating stored? If not, skip. Assuming rating field exists on Guid as Double rating
