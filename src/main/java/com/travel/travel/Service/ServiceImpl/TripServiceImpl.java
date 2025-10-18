@@ -7,9 +7,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.travel.travel.Models.Guid;
+import com.travel.travel.Models.GuidRequest;
 import com.travel.travel.Models.Hotel;
 import com.travel.travel.Models.Room;
 import com.travel.travel.Models.Trip;
+import com.travel.travel.Repository.GuidRepository;
+import com.travel.travel.Repository.GuidRequestRepository;
 import com.travel.travel.Repository.HotelRepository;
 import com.travel.travel.Repository.RoomRepository;
 import com.travel.travel.Repository.TripRepository;
@@ -34,6 +38,10 @@ public class TripServiceImpl implements TripService {
     private HotelRepository hotelRepository;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private GuidRepository guidRepository;
+    @Autowired
+    private GuidRequestRepository guidRequestRepository;
 
     @Override
     public Trip createTrip(Trip trip) throws Exception {
@@ -66,11 +74,36 @@ public class TripServiceImpl implements TripService {
             }
             trip.setSelectedRooms(managedRooms);
         }
-        return tripRepository.save(trip);
+        
+        // Save the trip first
+        Trip savedTrip = tripRepository.save(trip);
+        
+        // Create guide requests for all selected guides
+        if (trip.getSelectedGuideIds() != null && !trip.getSelectedGuideIds().isEmpty()) {
+            for (Long guideId : trip.getSelectedGuideIds()) {
+                Guid guide = guidRepository.findById(guideId)
+                    .orElseThrow(() -> new Exception("Guide not found with ID: " + guideId));
+                
+                GuidRequest guidRequest = new GuidRequest();
+                guidRequest.setUser(savedTrip.getUser());
+                guidRequest.setTrip(savedTrip);
+                guidRequest.setGuid(guide);
+                guidRequest.setStatus("pending");
+                
+                guidRequestRepository.save(guidRequest);
+            }
+        }
+        
+        return savedTrip;
     }
 
 	@Override
 	public Optional<Trip> tripGetById(Long id) throws Exception {
 		return tripRepository.findById(id);
+	}
+
+	@Override
+	public List<Trip> getTripsByUserId(Long userId) throws Exception {
+		return tripRepository.findByUserId(userId);
 	}
 }
