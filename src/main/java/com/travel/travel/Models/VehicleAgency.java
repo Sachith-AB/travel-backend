@@ -43,6 +43,11 @@ public class VehicleAgency {
     @Column(name = "license_photo_url")
     private List<String> licensePhoto;
 
+    @ElementCollection
+    @CollectionTable(name = "agency_images", joinColumns = @JoinColumn(name = "agency_id"))
+    @Column(name = "image_url")
+    private List<String> images;
+
     @Column(name = "description", length = 2000)
     private String description;
 
