@@ -1,7 +1,11 @@
 package com.travel.travel.Controller;
 
+import com.travel.travel.Models.Guid;
+import com.travel.travel.Models.User;
+import com.travel.travel.Service.GuidService;
+import com.travel.travel.Service.UserService;
 import java.util.List;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,15 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.travel.Models.Guid;
-import com.travel.travel.Service.GuidService;
-
 @RestController
 @RequestMapping("/api/guides")
 public class GuidController {
 
     @Autowired
     private GuidService guidService;
+    
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<?> createGuid(@RequestBody Guid guid) {
@@ -49,6 +53,25 @@ public class GuidController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(guid);
+    }
+    
+    @GetMapping("/docId/{docId}")
+    public ResponseEntity<?> getGuidByUserDocId(@PathVariable String docId) {
+        try {
+            Optional<User> userOpt = userService.findByPublicId(docId);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(404).body("User not found");
+            }
+            
+            Guid guid = guidService.getGuidByUserId(userOpt.get().getId());
+            if (guid == null) {
+                return ResponseEntity.status(404).body("Guide not found for this user");
+            }
+            
+            return ResponseEntity.ok(guid);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping
