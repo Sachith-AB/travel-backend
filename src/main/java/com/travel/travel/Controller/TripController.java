@@ -2,6 +2,7 @@ package com.travel.travel.Controller;
 
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,21 @@ public class TripController {
 
     @GetMapping("/{id}")
     ResponseEntity<?> getById(@PathVariable Long id) throws Exception {
-            System.out.println("Requested Trip ID: " + id); // Add this line
+        System.out.println("Requested Trip ID: " + id);
         try{
             Optional<Trip> trip = tripService.tripGetById(id);
             return ResponseEntity.ok(trip);
         } catch (Exception e){
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getTripsByUserId(@PathVariable Long userId) {
+        try {
+            List<Trip> trips = tripService.getTripsByUserId(userId);
+            return ResponseEntity.ok(trips);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
