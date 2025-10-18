@@ -1,10 +1,6 @@
 // src/main/java/com/travel/travel/Models/Hotel.java
 package com.travel.travel.Models;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -17,6 +13,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -69,6 +67,9 @@ public class Hotel {
 
     @Column(name = "description", length = 2000)
     private String description;
+
+    @Column(name = "price_per_night")
+    private Double pricePerNight;
 
     @ElementCollection
     @CollectionTable(name = "hotel_amenities", joinColumns = @JoinColumn(name = "hotel_id"))

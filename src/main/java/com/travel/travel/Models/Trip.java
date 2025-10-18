@@ -1,14 +1,8 @@
 package com.travel.travel.Models;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.travel.travel.Models.Enum.TripStatus;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -24,6 +18,10 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -114,8 +112,8 @@ public class Trip {
     private List<Hotel> selectedHotels;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "guides", referencedColumnName = "id")
-    private Guid selectedGuid ;
+    @JoinColumn(name = "selected_guide_id", referencedColumnName = "id")
+    private Guid selectedGuide ;
 
     @ManyToMany
     @JoinTable(
@@ -206,15 +204,7 @@ public class Trip {
     @Column(name = "booking_summary_json", columnDefinition = "TEXT")
     private String bookingSummaryJson;
 
-    @ElementCollection
-    @CollectionTable(name = "trip_selected_guides", joinColumns = @JoinColumn(name = "trip_id"))
-    @Column(name = "guide_id")
-    private List<Long> selectedGuideIds;
-
-    @ElementCollection
-    @CollectionTable(name = "trip_selected_hotels", joinColumns = @JoinColumn(name = "trip_id"))
-    @Column(name = "hotel_id")
-    private List<Long> selectedHotelIds;
+    // Note: raw id collections for selected guides/hotels were removed to avoid duplicating the many-to-many mappings
 
     @ElementCollection
     @CollectionTable(name = "trip_selected_night_hotels", joinColumns = @JoinColumn(name = "trip_id"))

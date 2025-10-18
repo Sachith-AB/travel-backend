@@ -26,12 +26,12 @@ public class SecurityConfig {
                         .requestMatchers("/**").permitAll() // all other requests
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // Optional if you're using basic auth
+                .httpBasic(Customizer.withDefaults()); 
 
         return http.build();
     }
 
-    // Add this CORS configuration method
+    
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
