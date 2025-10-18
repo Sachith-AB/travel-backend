@@ -36,6 +36,124 @@ public class GuidServiceImpl implements GuidService {
     }
 
     @Override
+    public List<Guid> getAllGuidsWithFilters(java.util.Map<String, String> filters) {
+        List<Guid> all = guidRepository.findAll();
+
+        // Apply simple filters in-memory for now
+        java.util.stream.Stream<Guid> stream = all.stream();
+
+        String search = filters.getOrDefault("search", "").trim();
+        if (!search.isEmpty()) {
+            String s = search.toLowerCase();
+            stream = stream.filter(g -> {
+                String name = g.getUser() != null ? ((g.getUser().getFirstName() == null ? "" : g.getUser().getFirstName()) + " " + (g.getUser().getLastName() == null ? "" : g.getUser().getLastName())).toLowerCase() : "";
+                String bio = g.getBio() != null ? g.getBio().toLowerCase() : "";
+                return name.contains(s) || bio.contains(s);
+            });
+        }
+
+        String language = filters.getOrDefault("language", "").trim();
+        if (!language.isEmpty()) {
+            // support multiple languages passed as comma-separated (e.g. "sinhala,english")
+            String[] requested = language.toLowerCase().split(",");
+            java.util.Set<String> reqSet = java.util.Arrays.stream(requested)
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(java.util.stream.Collectors.toSet());
+
+            if (!reqSet.isEmpty()) {
+                stream = stream.filter(g -> {
+                    if (g.getLanguagesSpoken() == null) return false;
+                    for (String gl : g.getLanguagesSpoken()) {
+                        if (gl == null) continue;
+                        String gln = gl.toLowerCase().trim();
+                        for (String r : reqSet) {
+                            // prefer exact match, fall back to contains to allow variants
+                            if (gln.equals(r) || gln.contains(r)) return true;
+                        }
+                    }
+                    return false;
+                });
+            }
+        }
+
+        // rating stored? If not, skip. Assuming rating field exists on Guid as Double rating
+        String minRating = filters.getOrDefault("minRating", "").trim();
+        if (!minRating.isEmpty()) {
+            try {
+                double r = Double.parseDouble(minRating);
+                stream = stream.filter(g -> {
+                    try {
+                        java.lang.reflect.Field f = g.getClass().getDeclaredField("rating");
+                        f.setAccessible(true);
+                        Object val = f.get(g);
+                        if (val == null) {
+                            // No rating available for this guide; skip filtering so guide remains in results
+                            return true;
+                        }
+                        double rv = Double.parseDouble(val.toString());
+                        return rv >= r;
+                    } catch (NoSuchFieldException nsfe) {
+                        // Guide model doesn't have a rating field; skip filtering
+                        return true;
+                    } catch (Exception e) {
+                        // On any other reflection/parsing error, skip filtering for safety
+                        return true;
+                    }
+                });
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+
+        String minPrice = filters.getOrDefault("minPrice", "").trim();
+        String maxPrice = filters.getOrDefault("maxPrice", "").trim();
+        if (!minPrice.isEmpty() || !maxPrice.isEmpty()) {
+            try {
+                double lo = minPrice.isEmpty() ? Double.NEGATIVE_INFINITY : Double.parseDouble(minPrice);
+                double hi = maxPrice.isEmpty() ? Double.POSITIVE_INFINITY : Double.parseDouble(maxPrice);
+                stream = stream.filter(g -> {
+                    Double price = g.getHoursRate();
+                    if (price == null) return false;
+                    return price >= lo && price <= hi;
+                });
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+
+        java.util.List<Guid> result = stream.collect(java.util.stream.Collectors.toList());
+
+        String sortBy = filters.getOrDefault("sortBy", "").trim();
+        if (!sortBy.isEmpty()) {
+            switch (sortBy) {
+                case "Lowest Price":
+                    result.sort(java.util.Comparator.comparing(g -> g.getHoursRate() == null ? Double.MAX_VALUE : g.getHoursRate()));
+                    break;
+                case "Highest Price":
+                    result.sort(java.util.Comparator.comparing((Guid g) -> g.getHoursRate() == null ? Double.MIN_VALUE : g.getHoursRate()).reversed());
+                    break;
+                case "Most Experience":
+                    result.sort(java.util.Comparator.comparing((Guid g) -> g.getExperienceYears() == null ? 0 : g.getExperienceYears()).reversed());
+                    break;
+                default: // Highest Rated or fallback - skip if no rating
+                    try {
+                        result.sort((a, b) -> {
+                            double ra = 0, rb = 0;
+                            try {
+                                java.lang.reflect.Field fa = a.getClass().getDeclaredField("rating"); fa.setAccessible(true); Object va = fa.get(a); ra = va == null ? 0 : Double.parseDouble(va.toString());
+                                java.lang.reflect.Field fb = b.getClass().getDeclaredField("rating"); fb.setAccessible(true); Object vb = fb.get(b); rb = vb == null ? 0 : Double.parseDouble(vb.toString());
+                            } catch (Exception e) { }
+                            return Double.compare(rb, ra);
+                        });
+                    } catch (Exception e) { }
+            }
+        }
+
+        return result;
+    }
+
+    @Override
     public Guid updateGuid(Long id, Guid guid) throws Exception {
         Guid existingGuid = guidRepository.findById(id).orElse(null);
         if (existingGuid == null) {
