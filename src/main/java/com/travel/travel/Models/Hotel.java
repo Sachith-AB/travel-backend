@@ -75,7 +75,7 @@ public class Hotel {
     @Column(name = "amenity")
     private List<String> amenities;
 
-    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"hotel", "hibernateLazyInitializer", "handler"})
     private List<Room> rooms;
 
