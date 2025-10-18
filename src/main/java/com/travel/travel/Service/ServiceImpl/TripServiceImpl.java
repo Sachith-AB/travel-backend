@@ -106,4 +106,27 @@ public class TripServiceImpl implements TripService {
 	public List<Trip> getTripsByUserId(Long userId) throws Exception {
 		return tripRepository.findByUserId(userId);
 	}
+	
+	@Override
+	public Trip updateTripStatus(Long tripId, String status) throws Exception {
+		Trip trip = tripRepository.findById(tripId)
+			.orElseThrow(() -> new Exception("Trip not found with ID: " + tripId));
+		
+		// Validate status
+		if (!isValidStatus(status)) {
+			throw new Exception("Invalid trip status: " + status);
+		}
+		
+		trip.setTripStatus(com.travel.travel.Models.Enum.TripStatus.valueOf(status));
+		return tripRepository.save(trip);
+	}
+	
+	private boolean isValidStatus(String status) {
+		try {
+			com.travel.travel.Models.Enum.TripStatus.valueOf(status);
+			return true;
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+	}
 }
