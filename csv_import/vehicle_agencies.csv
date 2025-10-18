@@ -1,0 +1,4 @@
+id,agency_name,user_id,street,city,district,province,registration_no,description,created_at
+1,CityDrive Rentals,1,No. 45 Galle Road,Colombo,Colombo,Western Province,VTA001,Premium vehicle rental service with modern fleet and experienced drivers,2024-01-15 10:00:00
+2,Ceylon Safari Tours,1,No. 89 Katugastota Road,Kandy,Kandy,Central Province,VTA002,Specialized in safari and wildlife tour vehicles,2024-01-16 10:00:00
+3,Island Wheels,1,No. 23 Main Street,Negombo,Gampaha,Western Province,VTA003,Reliable vehicle rental with island-wide service,2024-01-17 10:00:00
