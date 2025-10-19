@@ -1,11 +1,11 @@
 package com.travel.travel.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Entity
@@ -18,8 +18,10 @@ public class VehicleAgency {
     @Column(name = "agency_name")
     private String agencyName;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
 
     @Column(name = "street")
     private String street;
@@ -41,8 +43,19 @@ public class VehicleAgency {
     @Column(name = "license_photo_url")
     private List<String> licensePhoto;
 
+    @ElementCollection
+    @CollectionTable(name = "agency_images", joinColumns = @JoinColumn(name = "agency_id"))
+    @Column(name = "image_url")
+    private List<String> images;
+
     @Column(name = "description", length = 2000)
     private String description;
+
+    @Column(name = "is_verified", nullable = false)
+    private Boolean isVerified = false;
+
+    @Column(name = "verified_at")
+    private LocalDateTime verifiedAt;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

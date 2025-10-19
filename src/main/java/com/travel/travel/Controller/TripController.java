@@ -96,4 +96,14 @@ public class TripController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTrip(@PathVariable Long id, @RequestBody Trip trip) {
+        try {
+            Trip updatedTrip = tripService.updateTrip(id, trip);
+            return ResponseEntity.ok(updatedTrip);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }
