@@ -38,6 +38,9 @@ public class GuidRequest {
     private Guid guid;
 
     @Column(name = "status")
-    private String status; 
+    private String status;
+
+    @Column(name = "payment_status")
+    private String paymentStatus;
 }
 
