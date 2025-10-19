@@ -46,31 +46,51 @@ public class TripServiceImpl implements TripService {
     @Override
     public Trip createTrip(Trip trip) throws Exception {
         
+        // Handle user
         if (trip.getUser() != null && trip.getUser().getId() != null) {
             trip.setUser(userRepository.findById(trip.getUser().getId())
                 .orElseThrow(() -> new Exception("User not found")));
         }
+        
+        // Handle vehicle
         if (trip.getSelectedVehicle() != null && trip.getSelectedVehicle().getId() != null) {
             trip.setSelectedVehicle(vehicleRepository.findById(trip.getSelectedVehicle().getId())
                 .orElseThrow(() -> new Exception("Vehicle not found")));
+                
+            // Auto-set vehicle agency from the vehicle if not explicitly provided
+            if (trip.getSelectedVehicleAgency() == null || trip.getSelectedVehicleAgency().getId() == null) {
+                if (trip.getSelectedVehicle().getAgency() != null) {
+                    trip.setSelectedVehicleAgency(trip.getSelectedVehicle().getAgency());
+                }
+            }
         }
+        
+        // Handle vehicle agency (if explicitly provided)
         if (trip.getSelectedVehicleAgency() != null && trip.getSelectedVehicleAgency().getId() != null) {
             trip.setSelectedVehicleAgency(vehicleAgencyRepository.findById(trip.getSelectedVehicleAgency().getId())
                 .orElseThrow(() -> new Exception("Vehicle Agency not found")));
         }
+        
+        // Handle hotels
         if (trip.getSelectedHotels() != null && !trip.getSelectedHotels().isEmpty()) {
             List<Hotel> managedHotels = new ArrayList<>();
             for (Hotel hotel : trip.getSelectedHotels()) {
-                managedHotels.add(hotelRepository.findById(hotel.getId())
-                    .orElseThrow(() -> new Exception("Hotel not found")));
+                if (hotel != null && hotel.getId() != null) {
+                    managedHotels.add(hotelRepository.findById(hotel.getId())
+                        .orElseThrow(() -> new Exception("Hotel not found with ID: " + hotel.getId())));
+                }
             }
             trip.setSelectedHotels(managedHotels);
         }
+        
+        // Handle rooms
         if (trip.getSelectedRooms() != null && !trip.getSelectedRooms().isEmpty()) {
             List<Room> managedRooms = new ArrayList<>();
             for (Room room : trip.getSelectedRooms()) {
-                managedRooms.add(roomRepository.findById(room.getId())
-                    .orElseThrow(() -> new Exception("Room not found")));
+                if (room != null && room.getId() != null) {
+                    managedRooms.add(roomRepository.findById(room.getId())
+                        .orElseThrow(() -> new Exception("Room not found with ID: " + room.getId())));
+                }
             }
             trip.setSelectedRooms(managedRooms);
         }
