@@ -1,5 +1,6 @@
 package com.travel.travel.Models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,8 +43,40 @@ public class GuidRequest {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Guid guid;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "guide_booking_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private GuideBooking guideBooking;
+
+    @Column(name = "booking_type")
+    private String bookingType; // TOUR or INDIVIDUAL
+
     @Column(name = "status")
-    private String status;
+    private String status; // PENDING, APPROVED, REJECTED, CANCELLED
+    
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    
+    @Column(name = "end_date")
+    private LocalDate endDate;
+    
+    @Column(name = "number_of_days")
+    private Integer numberOfDays;
+    
+    @Column(name = "number_of_people")
+    private Integer numberOfPeople;
+    
+    @Column(name = "locations", columnDefinition = "TEXT")
+    private String locations;
+    
+    @Column(name = "total_price")
+    private Double totalPrice;
+    
+    @Column(name = "multi_request_id")
+    private String multiRequestId;
+    
+    @Column(name = "rejection_reason", columnDefinition = "TEXT")
+    private String rejectionReason;
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
