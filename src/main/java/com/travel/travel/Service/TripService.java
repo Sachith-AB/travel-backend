@@ -13,4 +13,6 @@ public interface TripService {
     List<Trip> getTripsByUserId(Long userId) throws Exception;
     
     Trip updateTripStatus(Long tripId, String status) throws Exception;
+
+    Trip updateTrip(Long id, Trip trip) throws Exception;
 }

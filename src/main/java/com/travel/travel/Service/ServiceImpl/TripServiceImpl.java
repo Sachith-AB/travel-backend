@@ -164,4 +164,78 @@ public class TripServiceImpl implements TripService {
 			return false;
 		}
 	}
+
+	@Override
+	public Trip updateTrip(Long id, Trip tripUpdate) throws Exception {
+		Trip existingTrip = tripRepository.findById(id)
+			.orElseThrow(() -> new Exception("Trip not found with id: " + id));
+
+		// Update selected guide if provided
+		if (tripUpdate.getSelectedGuide() != null && tripUpdate.getSelectedGuide().getId() != null) {
+			existingTrip.setSelectedGuide(guidRepository.findById(tripUpdate.getSelectedGuide().getId())
+				.orElseThrow(() -> new Exception("Guide not found")));
+		}
+
+		// Update trip status if provided
+		if (tripUpdate.getTripStatus() != null) {
+			existingTrip.setTripStatus(tripUpdate.getTripStatus());
+		}
+
+		// Update user if provided
+		if (tripUpdate.getUser() != null && tripUpdate.getUser().getId() != null) {
+			existingTrip.setUser(userRepository.findById(tripUpdate.getUser().getId())
+				.orElseThrow(() -> new Exception("User not found")));
+		}
+
+		// Update vehicle if provided
+		if (tripUpdate.getSelectedVehicle() != null && tripUpdate.getSelectedVehicle().getId() != null) {
+			existingTrip.setSelectedVehicle(vehicleRepository.findById(tripUpdate.getSelectedVehicle().getId())
+				.orElseThrow(() -> new Exception("Vehicle not found")));
+		}
+
+		// Update vehicle agency if provided
+		if (tripUpdate.getSelectedVehicleAgency() != null && tripUpdate.getSelectedVehicleAgency().getId() != null) {
+			existingTrip.setSelectedVehicleAgency(vehicleAgencyRepository.findById(tripUpdate.getSelectedVehicleAgency().getId())
+				.orElseThrow(() -> new Exception("Vehicle Agency not found")));
+		}
+
+		// Update hotels if provided
+		if (tripUpdate.getSelectedHotels() != null && !tripUpdate.getSelectedHotels().isEmpty()) {
+			List<Hotel> managedHotels = new ArrayList<>();
+			for (Hotel hotel : tripUpdate.getSelectedHotels()) {
+				managedHotels.add(hotelRepository.findById(hotel.getId())
+					.orElseThrow(() -> new Exception("Hotel not found")));
+			}
+			existingTrip.setSelectedHotels(managedHotels);
+		}
+
+		// Update rooms if provided
+		if (tripUpdate.getSelectedRooms() != null && !tripUpdate.getSelectedRooms().isEmpty()) {
+			List<Room> managedRooms = new ArrayList<>();
+			for (Room room : tripUpdate.getSelectedRooms()) {
+				managedRooms.add(roomRepository.findById(room.getId())
+					.orElseThrow(() -> new Exception("Room not found")));
+			}
+			existingTrip.setSelectedRooms(managedRooms);
+		}
+
+		// Update other fields if needed
+		if (tripUpdate.getPickupLocation() != null) {
+			existingTrip.setPickupLocation(tripUpdate.getPickupLocation());
+		}
+		if (tripUpdate.getTripStartDate() != null) {
+			existingTrip.setTripStartDate(tripUpdate.getTripStartDate());
+		}
+		if (tripUpdate.getTripEndDate() != null) {
+			existingTrip.setTripEndDate(tripUpdate.getTripEndDate());
+		}
+		if (tripUpdate.getBasePrice() != null) {
+			existingTrip.setBasePrice(tripUpdate.getBasePrice());
+		}
+		if (tripUpdate.getTotalFare() != null) {
+			existingTrip.setTotalFare(tripUpdate.getTotalFare());
+		}
+
+		return tripRepository.save(existingTrip);
+	}
 }

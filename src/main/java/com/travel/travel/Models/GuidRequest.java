@@ -52,5 +52,8 @@ public class GuidRequest {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "payment_status")
+    private String paymentStatus;
 }
 
