@@ -43,8 +43,19 @@ public class VehicleAgency {
     @Column(name = "license_photo_url")
     private List<String> licensePhoto;
 
+    @ElementCollection
+    @CollectionTable(name = "agency_images", joinColumns = @JoinColumn(name = "agency_id"))
+    @Column(name = "image_url")
+    private List<String> images;
+
     @Column(name = "description", length = 2000)
     private String description;
+
+    @Column(name = "is_verified", nullable = false)
+    private Boolean isVerified = false;
+
+    @Column(name = "verified_at")
+    private LocalDateTime verifiedAt;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

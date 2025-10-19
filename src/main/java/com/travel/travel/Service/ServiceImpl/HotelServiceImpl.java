@@ -1,6 +1,7 @@
 package com.travel.travel.Service.ServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,5 +53,10 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public List<Hotel> getAllHotels() {
         return hotelRepository.findAll();
+    }
+    
+    @Override
+    public Optional<Hotel> getHotelByUserId(Long userId) {
+        return hotelRepository.findByUserId(userId);
     }
 }
