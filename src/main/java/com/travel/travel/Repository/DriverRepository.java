@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DriverRepository extends JpaRepository<Driver,Long> {
@@ -14,4 +15,10 @@ public interface DriverRepository extends JpaRepository<Driver,Long> {
     List<Driver> findByAgency_Id(Long agencyId);
 
     Driver findByUser_Id(Long userId);
+    
+    // Note: Driver model doesn't have isVerified field, so removed countByIsVerified method
+    
+    Long countByCreatedAtAfter(LocalDateTime date);
+    
+    Long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }
