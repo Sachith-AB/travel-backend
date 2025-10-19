@@ -75,6 +75,21 @@ public class TripServiceImpl implements TripService {
             trip.setSelectedRooms(managedRooms);
         }
         
+        // Set display fields for easy database viewing
+        if (trip.getSelectedGuideIds() != null && !trip.getSelectedGuideIds().isEmpty()) {
+            trip.setGuidesDisplay(trip.getSelectedGuideIds().stream()
+                .map(String::valueOf)
+                .reduce((a, b) -> a + "," + b)
+                .orElse(""));
+        }
+        
+        if (trip.getSelectedHotelIds() != null && !trip.getSelectedHotelIds().isEmpty()) {
+            trip.setSelectedHotelIdsDisplay(trip.getSelectedHotelIds().stream()
+                .map(String::valueOf)
+                .reduce((a, b) -> a + "," + b)
+                .orElse(""));
+        }
+        
         // Save the trip first
         Trip savedTrip = tripRepository.save(trip);
         
