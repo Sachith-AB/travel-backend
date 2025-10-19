@@ -40,7 +40,7 @@ public class TripController {
             System.out.println("Number of Kids: " + trip.getNumberOfKids());
             System.out.println("Selected Vehicle: " + (trip.getSelectedVehicle() != null ? trip.getSelectedVehicle().getId() : "NULL"));
             System.out.println("Selected Vehicle Agency: " + (trip.getSelectedVehicleAgency() != null ? trip.getSelectedVehicleAgency().getId() : "NULL"));
-            System.out.println("Selected Guide: " + (trip.getSelectedGuid() != null ? trip.getSelectedGuid().getId() : "NULL"));
+            System.out.println("Selected Guide: " + (trip.getSelectedGuide() != null ? trip.getSelectedGuide().getId() : "NULL"));
             System.out.println("Selected Hotels Count: " + (trip.getSelectedHotels() != null ? trip.getSelectedHotels().size() : "0"));
             System.out.println("Selected Rooms Count: " + (trip.getSelectedRooms() != null ? trip.getSelectedRooms().size() : "0"));
             System.out.println("Base Price: " + trip.getBasePrice());
