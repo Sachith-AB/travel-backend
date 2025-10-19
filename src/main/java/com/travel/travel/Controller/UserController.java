@@ -1,12 +1,19 @@
 package com.travel.travel.Controller;
 
-import com.travel.travel.Models.User;
-import com.travel.travel.Service.UserService;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
+import com.travel.travel.Models.User;
+import com.travel.travel.Service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,10 +33,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) throws Exception{
+    ResponseEntity<User> getUserById(@PathVariable Long id) throws Exception{
         try {
             Optional<User> user = userService.getUserById(id);
-            return ResponseEntity.ok(user);
+            return user.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
@@ -46,10 +54,11 @@ public class UserController {
     }
 
     @GetMapping("/public/{docId}")
-    public ResponseEntity<Optional<User>> getUserByPublicId(@PathVariable String docId) {
+    public ResponseEntity<User> getUserByPublicId(@PathVariable String docId) {
         try {
             Optional<User> user = userService.findByPublicId(docId);
-            return ResponseEntity.ok(user);
+            return user.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
