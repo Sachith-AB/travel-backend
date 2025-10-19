@@ -139,7 +139,7 @@ public class TripServiceImpl implements TripService {
 
 	@Override
 	public List<Trip> getTripsByUserId(Long userId) throws Exception {
-		return tripRepository.findByUserId(userId);
+		return tripRepository.findByUserIdOrderByCreatedAtDesc(userId);
 	}
 	
 	@Override

@@ -3,7 +3,10 @@ package com.travel.travel.Models;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -239,5 +242,10 @@ public class Trip {
 
     @Column(name = "agreed_to_terms")
     private Boolean agreedToTerms;
+    
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
 }
 
