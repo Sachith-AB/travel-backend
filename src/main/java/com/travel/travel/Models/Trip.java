@@ -1,8 +1,17 @@
 package com.travel.travel.Models;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.travel.travel.Models.Enum.TripStatus;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -18,10 +27,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.List;
 import lombok.Data;
 
 @Data
@@ -111,9 +116,10 @@ public class Trip {
     )
     private List<Hotel> selectedHotels;
 
+    // The approved/accepted guide (after guide request approval)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "selected_guide_id", referencedColumnName = "id")
-    private Guid selectedGuide ;
+    private Guid selectedGuide;
 
     @ManyToMany
     @JoinTable(
@@ -204,7 +210,25 @@ public class Trip {
     @Column(name = "booking_summary_json", columnDefinition = "TEXT")
     private String bookingSummaryJson;
 
-    // Note: raw id collections for selected guides/hotels were removed to avoid duplicating the many-to-many mappings
+    // All guide IDs requested by user (stored in separate table)
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_guides", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "guide_id")
+    private List<Long> selectedGuideIds;
+    
+    // Comma-separated guide IDs for easy viewing in database (denormalized for convenience)
+    @Column(name = "guides", columnDefinition = "TEXT")
+    private String guidesDisplay;
+
+    // All hotel IDs selected by user (stored in separate table)
+    @ElementCollection
+    @CollectionTable(name = "trip_selected_hotels", joinColumns = @JoinColumn(name = "trip_id"))
+    @Column(name = "hotel_id")
+    private List<Long> selectedHotelIds;
+    
+    // Comma-separated hotel IDs for easy viewing in database (denormalized for convenience)
+    @Column(name = "selected_hotel_ids", columnDefinition = "TEXT")
+    private String selectedHotelIdsDisplay;
 
     @ElementCollection
     @CollectionTable(name = "trip_selected_night_hotels", joinColumns = @JoinColumn(name = "trip_id"))
@@ -218,5 +242,10 @@ public class Trip {
 
     @Column(name = "agreed_to_terms")
     private Boolean agreedToTerms;
+    
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
 }
 
