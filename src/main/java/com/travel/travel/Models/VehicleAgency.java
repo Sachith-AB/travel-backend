@@ -51,6 +51,12 @@ public class VehicleAgency {
     @Column(name = "description", length = 2000)
     private String description;
 
+    @Column(name = "is_verified", nullable = false)
+    private Boolean isVerified = false;
+
+    @Column(name = "verified_at")
+    private LocalDateTime verifiedAt;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
