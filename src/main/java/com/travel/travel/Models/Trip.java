@@ -119,7 +119,7 @@ public class Trip {
     // The approved/accepted guide (after guide request approval)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "selected_guide_id", referencedColumnName = "id")
-    private Guid selectedGuid;
+    private Guid selectedGuide;
 
     @ManyToMany
     @JoinTable(
