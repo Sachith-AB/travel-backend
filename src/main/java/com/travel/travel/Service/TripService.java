@@ -8,4 +8,6 @@ public interface TripService {
     Trip createTrip(Trip trip) throws Exception;
 
     Optional<Trip> tripGetById(Long id) throws Exception;
+
+    Trip updateTrip(Long id, Trip trip) throws Exception;
 }
