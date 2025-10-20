@@ -3,6 +3,7 @@ package com.travel.travel.Repository;
 
 import java.util.List;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,5 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             WHERE LOWER(h.city) LIKE LOWER(CONCAT('%', :city, '%'))
             """)
     List<HotelSearchDTO> findHotelsByCity(@Param("city") String city);
+    Optional<Hotel> findByUserId(Long userId);
 }

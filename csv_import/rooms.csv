@@ -1,0 +1,16 @@
+id,hotel_id,room_type,max_guests,bed_types,description,price_per_night,availability,created_at
+100,10,Deluxe Room,2,1 King Bed,Spacious deluxe room with city view featuring modern amenities and elegant decor,15000.00,true,2024-01-15 10:00:00
+101,10,Executive Suite,3,1 King Bed + 1 Sofa Bed,Luxurious suite with separate living area and premium facilities,28000.00,true,2024-01-15 10:00:00
+102,10,Premium Ocean View,2,1 King Bed or 2 Twin Beds,Premium room with stunning ocean views and balcony,22000.00,true,2024-01-15 10:00:00
+103,11,Ocean View Double,2,1 King Bed or 2 Twin Beds,Beautiful room with direct ocean views and private balcony,18000.00,true,2024-01-16 10:00:00
+104,11,Beach Villa,4,1 King Bed + 2 Twin Beds,Spacious villa with direct beach access and garden,35000.00,true,2024-01-16 10:00:00
+105,11,Honeymoon Suite,2,1 King Bed,Romantic suite with ocean view and private plunge pool,42000.00,true,2024-01-16 10:00:00
+106,12,Colonial Room,2,1 Queen Bed,Charming room with colonial-style decor and mountain view,12000.00,true,2024-01-17 10:00:00
+107,12,Tea Planter Suite,3,1 King Bed + 1 Single Bed,Spacious suite with tea plantation views and fireplace,20000.00,true,2024-01-17 10:00:00
+108,12,Mountain View Family,4,1 King Bed + 2 Twin Beds,Family room with stunning mountain and valley views,25000.00,true,2024-01-17 10:00:00
+109,13,Superior City View,2,1 King Bed or 2 Twin Beds,Modern room with city skyline views,16000.00,true,2024-01-18 10:00:00
+110,13,Premium Ocean View,2,1 King Bed,Luxury room with panoramic ocean views,24000.00,true,2024-01-18 10:00:00
+111,13,Presidential Suite,4,2 King Beds,Ultra-luxury suite with separate rooms and ocean views,65000.00,true,2024-01-18 10:00:00
+112,14,Eco Cabin,2,1 Queen Bed,Cozy eco-friendly cabin surrounded by nature,8000.00,true,2024-01-19 10:00:00
+113,14,Family Eco Lodge,4,1 King Bed + 2 Twin Beds,Spacious eco lodge perfect for families,14000.00,true,2024-01-19 10:00:00
+114,14,Luxury Tree House,2,1 King Bed,Unique tree house experience with modern comforts,18000.00,true,2024-01-19 10:00:00
