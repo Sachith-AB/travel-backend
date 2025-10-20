@@ -1,4 +1,4 @@
-package com.travel.travel.Config;
+package com.travel.travel.config;
 
 import java.io.IOException;
 import java.sql.Time;
