@@ -47,9 +47,12 @@ public class UserController {
     ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Long id) throws Exception{
         try {
             userService.updateUser(user, id);
-            return ResponseEntity.ok("OK");
+            // Fetch and return the updated user
+            Optional<User> updatedUser = userService.getUserById(id);
+            return updatedUser.map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
         }catch (Exception e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

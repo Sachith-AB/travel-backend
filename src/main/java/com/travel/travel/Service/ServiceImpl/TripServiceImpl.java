@@ -1,5 +1,8 @@
 package com.travel.travel.Service.ServiceImpl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -113,19 +116,149 @@ public class TripServiceImpl implements TripService {
         // Save the trip first
         Trip savedTrip = tripRepository.save(trip);
         
+        // DEBUG: Log saved trip details
+        System.out.println("=== SAVED TRIP DEBUG ===");
+        System.out.println("Trip ID: " + savedTrip.getId());
+        System.out.println("Trip Code: " + savedTrip.getTripCode());
+        System.out.println("Trip Start Date: " + savedTrip.getTripStartDate());
+        System.out.println("Trip End Date: " + savedTrip.getTripEndDate());
+        System.out.println("Number of Adults: " + savedTrip.getNumberOfAdults());
+        System.out.println("Number of Kids: " + savedTrip.getNumberOfKids());
+        System.out.println("Pickup Location: " + savedTrip.getPickupLocation());
+        System.out.println("Total Fare: " + savedTrip.getTotalFare());
+        System.out.println("Selected Guide IDs: " + savedTrip.getSelectedGuideIds());
+        System.out.println("========================");
+        
         // Create guide requests for all selected guides
         if (trip.getSelectedGuideIds() != null && !trip.getSelectedGuideIds().isEmpty()) {
+            // Generate multi-request ID for tour-based guide requests
+            String multiRequestId = "TOUR-" + savedTrip.getTripCode();
+            
+            System.out.println("Creating guide requests for " + trip.getSelectedGuideIds().size() + " guides");
+            System.out.println("Multi-Request ID: " + multiRequestId);
+            
+            // Extract traveler information
+            String travelerName = savedTrip.getFullName();
+            String travelerEmail = savedTrip.getEmail();
+            
+            System.out.println("Traveler Name: " + travelerName);
+            System.out.println("Traveler Email: " + travelerEmail);
+            
             for (Long guideId : trip.getSelectedGuideIds()) {
                 Guid guide = guidRepository.findById(guideId)
                     .orElseThrow(() -> new Exception("Guide not found with ID: " + guideId));
                 
                 GuidRequest guidRequest = new GuidRequest();
+                
+                // Basic fields
                 guidRequest.setUser(savedTrip.getUser());
                 guidRequest.setTrip(savedTrip);
                 guidRequest.setGuid(guide);
-                guidRequest.setStatus("pending");
+                guidRequest.setStatus("PENDING");
                 
-                guidRequestRepository.save(guidRequest);
+                // Tour-specific fields
+                guidRequest.setBookingType("TOUR");
+                guidRequest.setMultiRequestId(multiRequestId);
+                
+                // Trip details from the saved trip - convert Date to LocalDate
+                if (savedTrip.getTripStartDate() != null) {
+                    LocalDate startDate = convertToLocalDate(savedTrip.getTripStartDate());
+                    guidRequest.setStartDate(startDate);
+                    System.out.println("  Set start_date: " + startDate);
+                } else {
+                    System.out.println("  ⚠️ WARNING: Trip start date is NULL!");
+                }
+                
+                if (savedTrip.getTripEndDate() != null) {
+                    LocalDate endDate = convertToLocalDate(savedTrip.getTripEndDate());
+                    guidRequest.setEndDate(endDate);
+                    System.out.println("  Set end_date: " + endDate);
+                } else {
+                    System.out.println("  ⚠️ WARNING: Trip end date is NULL!");
+                }
+                
+                // Calculate number of days
+                if (savedTrip.getTripStartDate() != null && savedTrip.getTripEndDate() != null) {
+                    LocalDate startLocal = convertToLocalDate(savedTrip.getTripStartDate());
+                    LocalDate endLocal = convertToLocalDate(savedTrip.getTripEndDate());
+                    int days = (int) ChronoUnit.DAYS.between(startLocal, endLocal) + 1;
+                    guidRequest.setNumberOfDays(days);
+                    System.out.println("  Set number_of_days: " + days);
+                } else {
+                    System.out.println("  ⚠️ WARNING: Cannot calculate days - dates are NULL!");
+                }
+                
+                int totalPeople = savedTrip.getNumberOfAdults() + savedTrip.getNumberOfKids();
+                guidRequest.setNumberOfPeople(totalPeople);
+                System.out.println("  Set number_of_people: " + totalPeople);
+                
+                guidRequest.setLocations(savedTrip.getPickupLocation());
+                System.out.println("  Set locations: " + savedTrip.getPickupLocation());
+                
+                // Set traveler information
+                guidRequest.setTravelerName(travelerName);
+                guidRequest.setTravelerEmail(travelerEmail);
+                guidRequest.setRequestDate(LocalDateTime.now());
+                System.out.println("  Set traveler_name: " + travelerName);
+                System.out.println("  Set traveler_email: " + travelerEmail);
+                System.out.println("  Set request_date: " + guidRequest.getRequestDate());
+                
+                // Calculate individual guide price based on guide's hourly rate
+                Double guidePrice = 0.0;
+                if (guide.getHoursRate() != null && guidRequest.getNumberOfDays() != null) {
+                    // Assuming 8 hours per day for guide service
+                    double hoursPerDay = 8.0;
+                    guidePrice = guide.getHoursRate() * hoursPerDay * guidRequest.getNumberOfDays();
+                    System.out.println("  Guide hourly rate: " + guide.getHoursRate());
+                    System.out.println("  Days: " + guidRequest.getNumberOfDays());
+                    System.out.println("  Calculated guide price: " + guidePrice + " (rate: " + guide.getHoursRate() + " × " + hoursPerDay + " hours/day × " + guidRequest.getNumberOfDays() + " days)");
+                } else {
+                    // Fallback to trip total fare if guide rate not available
+                    if (savedTrip.getTotalFare() != null) {
+                        guidePrice = savedTrip.getTotalFare().doubleValue();
+                        System.out.println("  ⚠️ Guide rate not available, using trip total fare: " + guidePrice);
+                    } else {
+                        System.out.println("  ⚠️ WARNING: Both guide rate and total fare are NULL!");
+                    }
+                }
+                guidRequest.setTotalPrice(guidePrice);
+                System.out.println("  Set total_price: " + guidePrice);
+                
+                guidRequest.setPaymentStatus("PENDING");
+                
+                // DEBUG: Log what we're about to save
+                System.out.println("=== GUIDE REQUEST BEFORE SAVE (Guide ID: " + guideId + ") ===");
+                System.out.println("  booking_type: " + guidRequest.getBookingType());
+                System.out.println("  multi_request_id: " + guidRequest.getMultiRequestId());
+                System.out.println("  traveler_name: " + guidRequest.getTravelerName());
+                System.out.println("  traveler_email: " + guidRequest.getTravelerEmail());
+                System.out.println("  request_date: " + guidRequest.getRequestDate());
+                System.out.println("  start_date: " + guidRequest.getStartDate());
+                System.out.println("  end_date: " + guidRequest.getEndDate());
+                System.out.println("  number_of_days: " + guidRequest.getNumberOfDays());
+                System.out.println("  number_of_people: " + guidRequest.getNumberOfPeople());
+                System.out.println("  locations: " + guidRequest.getLocations());
+                System.out.println("  total_price: " + guidRequest.getTotalPrice());
+                System.out.println("  payment_status: " + guidRequest.getPaymentStatus());
+                System.out.println("========================================");
+                
+                GuidRequest savedRequest = guidRequestRepository.save(guidRequest);
+                
+                // DEBUG: Log what was actually saved
+                System.out.println("=== GUIDE REQUEST AFTER SAVE (ID: " + savedRequest.getId() + ") ===");
+                System.out.println("  booking_type: " + savedRequest.getBookingType());
+                System.out.println("  multi_request_id: " + savedRequest.getMultiRequestId());
+                System.out.println("  traveler_name: " + savedRequest.getTravelerName());
+                System.out.println("  traveler_email: " + savedRequest.getTravelerEmail());
+                System.out.println("  request_date: " + savedRequest.getRequestDate());
+                System.out.println("  start_date: " + savedRequest.getStartDate());
+                System.out.println("  end_date: " + savedRequest.getEndDate());
+                System.out.println("  number_of_days: " + savedRequest.getNumberOfDays());
+                System.out.println("  number_of_people: " + savedRequest.getNumberOfPeople());
+                System.out.println("  locations: " + savedRequest.getLocations());
+                System.out.println("  total_price: " + savedRequest.getTotalPrice());
+                System.out.println("  payment_status: " + savedRequest.getPaymentStatus());
+                System.out.println("=========================================");
             }
         }
         
@@ -163,6 +296,16 @@ public class TripServiceImpl implements TripService {
 		} catch (IllegalArgumentException e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Helper method to convert java.sql.Date to java.time.LocalDate
+	 */
+	private LocalDate convertToLocalDate(java.sql.Date date) {
+		if (date == null) {
+			return null;
+		}
+		return date.toLocalDate();
 	}
 
 	@Override
