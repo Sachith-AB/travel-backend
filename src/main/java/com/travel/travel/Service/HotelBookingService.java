@@ -15,6 +15,13 @@ public interface HotelBookingService {
     HotelBooking createBooking(HotelBookingRequest request) throws Exception;
     
     /**
+     * Update an existing booking
+     * @param booking The booking to update
+     * @return The updated booking
+     */
+    HotelBooking updateBooking(HotelBooking booking);
+    
+    /**
      * Get booking by ID
      * @param id The booking ID
      * @return The booking

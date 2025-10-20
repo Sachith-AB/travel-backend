@@ -84,7 +84,7 @@ public class HotelBookingServiceImpl implements HotelBookingService {
         
         booking.setPricePerNight(pricePerNight);
         booking.setTotalAmount(totalAmount);
-        booking.setCurrency("LKR");
+        booking.setCurrency("USD"); // Changed from LKR to USD for Stripe compatibility
         
         booking.setPaymentStatus("PENDING");
         booking.setBookingStatus("PENDING");
@@ -94,6 +94,11 @@ public class HotelBookingServiceImpl implements HotelBookingService {
             booking.setStripePaymentIntentId(request.getStripePaymentIntentId());
         }
         
+        return hotelBookingRepository.save(booking);
+    }
+    
+    @Override
+    public HotelBooking updateBooking(HotelBooking booking) {
         return hotelBookingRepository.save(booking);
     }
     
@@ -120,15 +125,25 @@ public class HotelBookingServiceImpl implements HotelBookingService {
     @Override
     @Transactional
     public HotelBooking confirmPayment(String paymentIntentId) throws Exception {
+        System.out.println("Looking for booking with payment intent ID: " + paymentIntentId);
+        
         HotelBooking booking = hotelBookingRepository.findByStripePaymentIntentId(paymentIntentId)
-            .orElseThrow(() -> new Exception("Booking not found for payment intent"));
+            .orElseThrow(() -> {
+                System.err.println("No booking found with payment intent ID: " + paymentIntentId);
+                return new Exception("Booking not found for payment intent: " + paymentIntentId);
+            });
+        
+        System.out.println("Found booking: " + booking.getId() + ", current status: " + booking.getBookingStatus());
         
         booking.setPaymentStatus("COMPLETED");
         booking.setBookingStatus("CONFIRMED");
         booking.setPaymentDate(LocalDateTime.now());
         booking.setPaymentMethod("STRIPE");
         
-        return hotelBookingRepository.save(booking);
+        HotelBooking savedBooking = hotelBookingRepository.save(booking);
+        System.out.println("Booking updated to CONFIRMED: " + savedBooking.getBookingReference());
+        
+        return savedBooking;
     }
     
     @Override

@@ -42,10 +42,13 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             metadata.put("bookingType", request.getBookingType());
         }
         
+        // Use USD as default currency for better Stripe compatibility
+        String currency = request.getCurrency() != null ? request.getCurrency().toLowerCase() : "usd";
+        
         // Build payment intent parameters
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
             .setAmount(amountInCents)
-            .setCurrency(request.getCurrency() != null ? request.getCurrency().toLowerCase() : "lkr")
+            .setCurrency(currency)
             .setDescription(request.getDescription())
             .putAllMetadata(metadata)
             .setAutomaticPaymentMethods(
