@@ -19,8 +19,11 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() 
-                        .requestMatchers("/**").permitAll() 
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // 💥 allow preflight
+                        .requestMatchers("/ws/**").permitAll() // Allow WebSocket connections
+                        .requestMatchers("/app/**").permitAll() // Allow WebSocket message destinations
+                        .requestMatchers("/topic/**").permitAll() // Allow WebSocket subscriptions
+                        .requestMatchers("/**").permitAll() // all other requests
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults()); 
@@ -32,10 +35,11 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5001", "http://localhost:5000", "http://localhost:5002")); 
+        configuration.setAllowedOriginPatterns(Arrays.asList("*")); // Changed to setAllowedOriginPatterns
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization")); // Expose headers if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
