@@ -72,6 +72,15 @@ public class GuidRequest {
     @Column(name = "total_price")
     private Double totalPrice;
     
+    @Column(name = "traveler_name")
+    private String travelerName;
+    
+    @Column(name = "traveler_email")
+    private String travelerEmail;
+    
+    @Column(name = "request_date")
+    private LocalDateTime requestDate;
+    
     @Column(name = "multi_request_id")
     private String multiRequestId;
     
