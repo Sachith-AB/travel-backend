@@ -37,25 +37,55 @@ public class GuidRequestServiceImpl implements GuidRequestService {
         
         existing.setStatus(newStatus);
         
-        // If guide request is approved or accepted, update the trip status to "accepted"
+        // If guide request is approved or accepted, update the trip and recalculate total fare
         if (newStatus != null && 
             (newStatus.equalsIgnoreCase("approved") || newStatus.equalsIgnoreCase("accepted")) &&
             !newStatus.equalsIgnoreCase(oldStatus)) {
             
             Trip trip = existing.getTrip();
             if (trip != null) {
+                boolean tripUpdated = false;
+                
                 // Only update if trip is still pending
                 if (trip.getTripStatus() == TripStatus.pending) {
                     trip.setTripStatus(TripStatus.accepted);
-                    tripRepository.save(trip);
+                    tripUpdated = true;
                     System.out.println("✅ Auto-updated trip " + trip.getId() + " status to 'accepted' after guide approval");
                 }
                 
                 // Set the approved guide as the selected guide
                 if (existing.getGuid() != null && trip.getSelectedGuide() == null) {
                     trip.setSelectedGuide(existing.getGuid());
-                    tripRepository.save(trip);
+                    tripUpdated = true;
                     System.out.println("✅ Set guide " + existing.getGuid().getId() + " as selected guide for trip " + trip.getId());
+                }
+                
+                // Recalculate total fare to include the accepted guide's price
+                if (existing.getTotalPrice() != null && existing.getTotalPrice() > 0) {
+                    // Get current total fare (base price from trip)
+                    double currentTotal = trip.getTotalFare() != null ? trip.getTotalFare().doubleValue() : 0.0;
+                    
+                    // Get base price (trip cost without guide)
+                    double basePrice = trip.getBasePrice() != null ? trip.getBasePrice().doubleValue() : 0.0;
+                    
+                    // Calculate new total: base price + accepted guide's price
+                    double guidePrice = existing.getTotalPrice();
+                    double newTotalFare = basePrice + guidePrice;
+                    
+                    // Only update if different
+                    if (Math.abs(currentTotal - newTotalFare) > 0.01) {
+                        trip.setTotalFare(java.math.BigDecimal.valueOf(newTotalFare));
+                        tripUpdated = true;
+                        System.out.println("✅ Updated trip " + trip.getId() + " total fare: LKR " + 
+                            String.format("%.2f", newTotalFare) + 
+                            " (Base: " + String.format("%.2f", basePrice) + 
+                            " + Guide: " + String.format("%.2f", guidePrice) + ")");
+                    }
+                }
+                
+                // Save trip if any changes were made
+                if (tripUpdated) {
+                    tripRepository.save(trip);
                 }
             }
         }

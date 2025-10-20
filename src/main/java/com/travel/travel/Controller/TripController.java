@@ -2,11 +2,13 @@ package com.travel.travel.Controller;
 
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stripe.exception.StripeException;
+import com.travel.travel.DTO.PaymentIntentRequest;
+import com.travel.travel.DTO.PaymentIntentResponse;
 import com.travel.travel.Models.Trip;
+import com.travel.travel.Service.StripePaymentService;
 import com.travel.travel.Service.TripService;
 
 @RestController
@@ -25,6 +31,9 @@ public class TripController {
 
     @Autowired
     TripService tripService;
+    
+    @Autowired
+    StripePaymentService stripePaymentService;
 
     @PostMapping
     public ResponseEntity<?> createTrip(@RequestBody Trip trip) {
@@ -65,9 +74,17 @@ public class TripController {
     ResponseEntity<?> getById(@PathVariable Long id) throws Exception {
         System.out.println("Requested Trip ID: " + id);
         try{
-            Optional<Trip> trip = tripService.tripGetById(id);
-            return ResponseEntity.ok(trip);
+            Optional<Trip> tripOptional = tripService.tripGetById(id);
+            if (tripOptional.isPresent()) {
+                Trip trip = tripOptional.get();
+                System.out.println("✅ Found trip: " + trip.getTripCode());
+                return ResponseEntity.ok(trip);
+            } else {
+                System.out.println("❌ Trip not found with ID: " + id);
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e){
+            System.err.println("❌ Error fetching trip: " + e.getMessage());
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
@@ -104,6 +121,50 @@ public class TripController {
             return ResponseEntity.ok(updatedTrip);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Create payment intent for trip booking
+     */
+    @PostMapping("/create-payment-intent")
+    public ResponseEntity<?> createPaymentIntent(@RequestBody PaymentIntentRequest request) {
+        try {
+            // Validate the trip exists if bookingId is provided
+            Trip trip = null;
+            if (request.getBookingId() != null) {
+                Optional<Trip> tripOptional = tripService.tripGetById(request.getBookingId());
+                if (!tripOptional.isPresent()) {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "Trip not found with ID: " + request.getBookingId());
+                    return ResponseEntity.badRequest().body(error);
+                }
+                trip = tripOptional.get();
+                System.out.println("Found trip: " + trip.getTripCode());
+            }
+            
+            PaymentIntentResponse response = stripePaymentService.createPaymentIntent(request);
+            System.out.println("Payment intent created: " + response.getPaymentIntentId());
+            
+            // Update trip with payment intent ID
+            if (trip != null && response.getPaymentIntentId() != null) {
+                trip.setStripePaymentIntentId(response.getPaymentIntentId());
+                Trip updatedTrip = tripService.updateTrip(trip.getId(), trip);
+                System.out.println("Trip updated with payment intent ID: " + updatedTrip.getStripePaymentIntentId());
+            }
+            
+            return ResponseEntity.ok(response);
+        } catch (StripeException e) {
+            System.err.println("Stripe error: " + e.getMessage());
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Payment processing error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        } catch (Exception e) {
+            System.err.println("Error creating payment intent: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Failed to create payment intent: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 }

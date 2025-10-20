@@ -243,6 +243,9 @@ public class Trip {
     @Column(name = "agreed_to_terms")
     private Boolean agreedToTerms;
     
+    @Column(name = "stripe_payment_intent_id")
+    private String stripePaymentIntentId;
+    
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
