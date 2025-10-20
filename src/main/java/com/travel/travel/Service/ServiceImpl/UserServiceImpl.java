@@ -31,12 +31,43 @@ public class UserServiceImpl implements UserService {
         User existing = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
 
-        existing.setFirstName(user.getFirstName());
-        existing.setLastName(user.getLastName());
-        existing.setProfilePictures(user.getProfilePictures());
-        existing.setRole(user.getRole());
-        existing.setIsDeleted(user.getIsDeleted());
-
+        // Update basic info
+        if (user.getFirstName() != null) {
+            existing.setFirstName(user.getFirstName());
+        }
+        if (user.getLastName() != null) {
+            existing.setLastName(user.getLastName());
+        }
+        
+        // Update contact and location info
+        if (user.getPhoneNumber() != null) {
+            existing.setPhoneNumber(user.getPhoneNumber());
+        }
+        if (user.getAddress() != null) {
+            existing.setAddress(user.getAddress());
+        }
+        if (user.getCity() != null) {
+            existing.setCity(user.getCity());
+        }
+        if (user.getCountry() != null) {
+            existing.setCountry(user.getCountry());
+        }
+        
+        // Update profile picture
+        if (user.getProfilePicture() != null) {
+            existing.setProfilePicture(user.getProfilePicture());
+        }
+        
+        // Update other fields
+        if (user.getProfilePictures() != null) {
+            existing.setProfilePictures(user.getProfilePictures());
+        }
+        if (user.getRole() != null) {
+            existing.setRole(user.getRole());
+        }
+        if (user.getIsDeleted() != null) {
+            existing.setIsDeleted(user.getIsDeleted());
+        }
     }
 
     @Override

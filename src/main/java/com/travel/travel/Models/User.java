@@ -40,9 +40,24 @@ public class User {
     @Column(name = "doc_id")
     private String docId;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "profile_picture", columnDefinition = "TEXT")
+    private String profilePicture;
+
     @ElementCollection
     @CollectionTable(name = "profile_pictures", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "profile_picture")
+    @Column(name = "picture_url")
     private List<String> profilePictures;
 
     @Column(name = "role")
