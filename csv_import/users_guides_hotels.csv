@@ -1,0 +1,11 @@
+id,first_name,last_name,email,role,is_deleted,created_at,doc_id
+200,Samantha,Perera,samantha.perera@travelguide.lk,GUIDE,false,2024-01-10 09:00:00,
+201,Rohan,Silva,rohan.silva@islandguide.lk,GUIDE,false,2024-01-11 09:00:00,
+202,Nimal,Fernando,nimal.fernando@ceylonexperts.lk,GUIDE,false,2024-01-12 09:00:00,
+203,Priya,Jayawardena,priya.jaya@tourlanka.lk,GUIDE,false,2024-01-13 09:00:00,
+204,Kasun,Wickramasinghe,kasun.wickrama@heritageguides.lk,GUIDE,false,2024-01-14 09:00:00,
+205,Chaminda,Rathnayake,chaminda.r@luxuryhotels.lk,HOTEL_OWNER,false,2024-01-15 09:00:00,
+206,Dilini,Wijesinghe,dilini.w@beachresorts.lk,HOTEL_OWNER,false,2024-01-16 09:00:00,
+207,Malith,Gunasekara,malith.g@hillcountryhotels.lk,HOTEL_OWNER,false,2024-01-17 09:00:00,
+208,Sanduni,Peris,sanduni.p@cityhotels.lk,HOTEL_OWNER,false,2024-01-18 09:00:00,
+209,Thilina,Jayasuriya,thilina.j@ecohotels.lk,HOTEL_OWNER,false,2024-01-19 09:00:00,

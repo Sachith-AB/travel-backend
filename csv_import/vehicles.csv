@@ -1,0 +1,6 @@
+id,vehicle_type,vehicle_no,registration_no,price_per_kilometer,base_price,insurance_number,insurance_expiry_date,vehicle_model,is_verified,availability,capacity,agency_id,created_at
+1,Sedan,V-001,CAR-1234,100.00,8000.00,INS-2024-001,2025-12-31,Toyota Axio,true,true,4,1,2024-01-15 10:30:00
+2,Van,V-002,VAN-5678,150.00,15000.00,INS-2024-002,2025-11-30,Toyota KDH,true,true,12,1,2024-01-15 11:00:00
+3,SUV,V-003,SUV-9012,180.00,18000.00,INS-2024-003,2025-10-31,Toyota Fortuner,true,true,7,1,2024-01-15 11:30:00
+4,Jeep,V-004,JEP-3456,200.00,20000.00,INS-2024-004,2025-12-15,Toyota Land Cruiser,true,true,6,2,2024-01-16 10:30:00
+5,Van,V-005,VAN-7890,140.00,14000.00,INS-2024-005,2025-09-30,Nissan Caravan,true,true,10,3,2024-01-17 10:30:00

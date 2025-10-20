@@ -1,12 +1,16 @@
 package com.travel.travel.Controller;
 
+import com.travel.travel.Models.User;
 import com.travel.travel.Models.VehicleAgency;
+import com.travel.travel.Repository.UserRepository;
 import com.travel.travel.Service.VehicleAgencyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -17,13 +21,53 @@ public class VehicleAgencyController {
     @Autowired
     VehicleAgencyService vehicleAgencyService;
 
+    @Autowired
+    UserRepository userRepository;
+
     @PostMapping("/register")
-    public ResponseEntity<?> registerHotel(@RequestBody VehicleAgency vehicleAgency){
+    public ResponseEntity<?> registerVehicleAgency(@RequestBody Map<String, Object> request){
         try {
+            // Extract userDocId from request
+            String userDocId = (String) request.get("userDocId");
+            if (userDocId == null || userDocId.isEmpty()) {
+                return ResponseEntity.badRequest().body("User ID is required");
+            }
+
+            // Find user by Firebase UID
+            Optional<User> userOpt = userRepository.findByDocId(userDocId);
+            if (!userOpt.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            User user = userOpt.get();
+
+            // Check if user already has an agency
+            VehicleAgency existing = vehicleAgencyService.getAgenciesByUserId(user.getId());
+            if (existing != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Vehicle agency already registered for this user");
+            }
+
+            // Create VehicleAgency entity
+            VehicleAgency vehicleAgency = new VehicleAgency();
+            vehicleAgency.setAgencyName((String) request.get("agencyName"));
+            vehicleAgency.setStreet((String) request.get("street"));
+            vehicleAgency.setCity((String) request.get("city"));
+            vehicleAgency.setDistrict((String) request.get("district"));
+            vehicleAgency.setProvince((String) request.get("province"));
+            vehicleAgency.setRegistrationNo((String) request.get("registrationNo"));
+            vehicleAgency.setDescription((String) request.get("description"));
+            vehicleAgency.setLicensePhoto((List<String>) request.get("licensePhoto"));
+            vehicleAgency.setImages((List<String>) request.get("images"));
+            vehicleAgency.setUser(user);
+
+            // Save
             vehicleAgencyService.registerVehicleAgency(vehicleAgency);
-            return ResponseEntity.ok("OK");
+            return ResponseEntity.ok("Vehicle agency registered successfully");
         }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Registration failed: " + e.getMessage());
         }
     }
 
