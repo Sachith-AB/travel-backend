@@ -1,17 +1,18 @@
 package com.travel.travel.RequestDto;
 
-import com.travel.travel.Models.Enum.TripStatus;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
+import com.travel.travel.Models.Enum.TripStatus;
+
+import lombok.Data;
+
 @Data
 public class TripRequestDTO {
     private String tripCode;
-    private Long userId;  // Just the ID instead of full User object
+    private Long userId;  
     private String pickupLocation;
     private Date tripStartDate;
     private String tripEndDate;

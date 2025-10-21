@@ -45,10 +45,7 @@ public class GuideBookingController {
         }
     }
 
-    /**
-     * Get all bookings for the current user
-     * GET /api/guide-bookings/my-bookings
-     */
+    
     @GetMapping("/my-bookings")
     public ResponseEntity<?> getMyBookings(@RequestParam Long userId) {
         try {
@@ -61,11 +58,7 @@ public class GuideBookingController {
         }
     }
 
-    /**
-     * Get all bookings for the current user, grouped by multi_request_id
-     * Shows all guides requested per booking with their individual statuses
-     * GET /api/guide-bookings/my-bookings/grouped
-     */
+    
     @GetMapping("/my-bookings/grouped")
     public ResponseEntity<?> getMyBookingsGrouped(@RequestParam Long userId) {
         try {
@@ -78,10 +71,7 @@ public class GuideBookingController {
         }
     }
 
-    /**
-     * Get all booking requests for a guide
-     * GET /api/guide-bookings/requests
-     */
+   
     @GetMapping("/requests")
     public ResponseEntity<?> getGuideRequests(@RequestParam Long guideId) {
         try {
@@ -94,10 +84,7 @@ public class GuideBookingController {
         }
     }
 
-    /**
-     * Get a specific booking by ID
-     * GET /api/guide-bookings/{id}
-     */
+    
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookingById(@PathVariable Long id) {
         try {
@@ -111,10 +98,7 @@ public class GuideBookingController {
         }
     }
 
-    /**
-     * Guide approves a booking
-     * PUT /api/guide-bookings/{id}/approve
-     */
+    
     @PutMapping("/{id}/approve")
     public ResponseEntity<?> approveBooking(@PathVariable Long id, @RequestParam Long guideId) {
         try {
@@ -127,10 +111,6 @@ public class GuideBookingController {
         }
     }
 
-    /**
-     * Guide rejects a booking
-     * PUT /api/guide-bookings/{id}/reject
-     */
     @PutMapping("/{id}/reject")
     public ResponseEntity<?> rejectBooking(
         @PathVariable Long id, 

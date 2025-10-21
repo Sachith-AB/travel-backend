@@ -79,4 +79,39 @@ public class GuidRequestController {
         if (req == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(req);
     }
+
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
+        try {
+            GuidRequest request = guidRequestService.getById(id);
+            if (request == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            request.setStatus("accepted");
+            GuidRequest updated = guidRequestService.updateRequest(id, request);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<?> rejectRequest(@PathVariable Long id, @RequestBody(required = false) java.util.Map<String, String> body) {
+        try {
+            GuidRequest request = guidRequestService.getById(id);
+            if (request == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            request.setStatus("REJECTED");
+            if (body != null && body.containsKey("rejectionReason")) {
+                request.setRejectionReason(body.get("rejectionReason"));
+            }
+            GuidRequest updated = guidRequestService.updateRequest(id, request);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }

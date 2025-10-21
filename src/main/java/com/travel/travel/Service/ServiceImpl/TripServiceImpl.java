@@ -49,18 +49,18 @@ public class TripServiceImpl implements TripService {
     @Override
     public Trip createTrip(Trip trip) throws Exception {
         
-        // Handle user
+      
         if (trip.getUser() != null && trip.getUser().getId() != null) {
             trip.setUser(userRepository.findById(trip.getUser().getId())
                 .orElseThrow(() -> new Exception("User not found")));
         }
         
-        // Handle vehicle
+        
         if (trip.getSelectedVehicle() != null && trip.getSelectedVehicle().getId() != null) {
             trip.setSelectedVehicle(vehicleRepository.findById(trip.getSelectedVehicle().getId())
                 .orElseThrow(() -> new Exception("Vehicle not found")));
                 
-            // Auto-set vehicle agency from the vehicle if not explicitly provided
+           
             if (trip.getSelectedVehicleAgency() == null || trip.getSelectedVehicleAgency().getId() == null) {
                 if (trip.getSelectedVehicle().getAgency() != null) {
                     trip.setSelectedVehicleAgency(trip.getSelectedVehicle().getAgency());
@@ -68,13 +68,13 @@ public class TripServiceImpl implements TripService {
             }
         }
         
-        // Handle vehicle agency (if explicitly provided)
+       
         if (trip.getSelectedVehicleAgency() != null && trip.getSelectedVehicleAgency().getId() != null) {
             trip.setSelectedVehicleAgency(vehicleAgencyRepository.findById(trip.getSelectedVehicleAgency().getId())
                 .orElseThrow(() -> new Exception("Vehicle Agency not found")));
         }
         
-        // Handle hotels
+       
         if (trip.getSelectedHotels() != null && !trip.getSelectedHotels().isEmpty()) {
             List<Hotel> managedHotels = new ArrayList<>();
             for (Hotel hotel : trip.getSelectedHotels()) {
@@ -86,7 +86,7 @@ public class TripServiceImpl implements TripService {
             trip.setSelectedHotels(managedHotels);
         }
         
-        // Handle rooms
+        
         if (trip.getSelectedRooms() != null && !trip.getSelectedRooms().isEmpty()) {
             List<Room> managedRooms = new ArrayList<>();
             for (Room room : trip.getSelectedRooms()) {
@@ -98,7 +98,7 @@ public class TripServiceImpl implements TripService {
             trip.setSelectedRooms(managedRooms);
         }
         
-        // Set display fields for easy database viewing
+       
         if (trip.getSelectedGuideIds() != null && !trip.getSelectedGuideIds().isEmpty()) {
             trip.setGuidesDisplay(trip.getSelectedGuideIds().stream()
                 .map(String::valueOf)
@@ -113,10 +113,10 @@ public class TripServiceImpl implements TripService {
                 .orElse(""));
         }
         
-        // Save the trip first
+       
         Trip savedTrip = tripRepository.save(trip);
         
-        // DEBUG: Log saved trip details
+       
         System.out.println("=== SAVED TRIP DEBUG ===");
         System.out.println("Trip ID: " + savedTrip.getId());
         System.out.println("Trip Code: " + savedTrip.getTripCode());
@@ -129,15 +129,15 @@ public class TripServiceImpl implements TripService {
         System.out.println("Selected Guide IDs: " + savedTrip.getSelectedGuideIds());
         System.out.println("========================");
         
-        // Create guide requests for all selected guides
+        
         if (trip.getSelectedGuideIds() != null && !trip.getSelectedGuideIds().isEmpty()) {
-            // Generate multi-request ID for tour-based guide requests
+            
             String multiRequestId = "TOUR-" + savedTrip.getTripCode();
             
             System.out.println("Creating guide requests for " + trip.getSelectedGuideIds().size() + " guides");
             System.out.println("Multi-Request ID: " + multiRequestId);
             
-            // Extract traveler information
+            
             String travelerName = savedTrip.getFullName();
             String travelerEmail = savedTrip.getEmail();
             
@@ -150,23 +150,23 @@ public class TripServiceImpl implements TripService {
                 
                 GuidRequest guidRequest = new GuidRequest();
                 
-                // Basic fields
+                
                 guidRequest.setUser(savedTrip.getUser());
                 guidRequest.setTrip(savedTrip);
                 guidRequest.setGuid(guide);
                 guidRequest.setStatus("PENDING");
                 
-                // Tour-specific fields
+             
                 guidRequest.setBookingType("TOUR");
                 guidRequest.setMultiRequestId(multiRequestId);
                 
-                // Trip details from the saved trip - convert Date to LocalDate
+               
                 if (savedTrip.getTripStartDate() != null) {
                     LocalDate startDate = convertToLocalDate(savedTrip.getTripStartDate());
                     guidRequest.setStartDate(startDate);
                     System.out.println("  Set start_date: " + startDate);
                 } else {
-                    System.out.println("  ⚠️ WARNING: Trip start date is NULL!");
+                    System.out.println("   WARNING: Trip start date is NULL!");
                 }
                 
                 if (savedTrip.getTripEndDate() != null) {
@@ -174,10 +174,10 @@ public class TripServiceImpl implements TripService {
                     guidRequest.setEndDate(endDate);
                     System.out.println("  Set end_date: " + endDate);
                 } else {
-                    System.out.println("  ⚠️ WARNING: Trip end date is NULL!");
+                    System.out.println("   WARNING: Trip end date is NULL!");
                 }
                 
-                // Calculate number of days
+                
                 if (savedTrip.getTripStartDate() != null && savedTrip.getTripEndDate() != null) {
                     LocalDate startLocal = convertToLocalDate(savedTrip.getTripStartDate());
                     LocalDate endLocal = convertToLocalDate(savedTrip.getTripEndDate());
@@ -195,7 +195,7 @@ public class TripServiceImpl implements TripService {
                 guidRequest.setLocations(savedTrip.getPickupLocation());
                 System.out.println("  Set locations: " + savedTrip.getPickupLocation());
                 
-                // Set traveler information
+                
                 guidRequest.setTravelerName(travelerName);
                 guidRequest.setTravelerEmail(travelerEmail);
                 guidRequest.setRequestDate(LocalDateTime.now());
@@ -203,17 +203,17 @@ public class TripServiceImpl implements TripService {
                 System.out.println("  Set traveler_email: " + travelerEmail);
                 System.out.println("  Set request_date: " + guidRequest.getRequestDate());
                 
-                // Calculate individual guide price based on guide's hourly rate
+                
                 Double guidePrice = 0.0;
                 if (guide.getHoursRate() != null && guidRequest.getNumberOfDays() != null) {
-                    // Assuming 8 hours per day for guide service
+                    
                     double hoursPerDay = 8.0;
                     guidePrice = guide.getHoursRate() * hoursPerDay * guidRequest.getNumberOfDays();
                     System.out.println("  Guide hourly rate: " + guide.getHoursRate());
                     System.out.println("  Days: " + guidRequest.getNumberOfDays());
                     System.out.println("  Calculated guide price: " + guidePrice + " (rate: " + guide.getHoursRate() + " × " + hoursPerDay + " hours/day × " + guidRequest.getNumberOfDays() + " days)");
                 } else {
-                    // Fallback to trip total fare if guide rate not available
+                   
                     if (savedTrip.getTotalFare() != null) {
                         guidePrice = savedTrip.getTotalFare().doubleValue();
                         System.out.println("  ⚠️ Guide rate not available, using trip total fare: " + guidePrice);
@@ -226,7 +226,7 @@ public class TripServiceImpl implements TripService {
                 
                 guidRequest.setPaymentStatus("PENDING");
                 
-                // DEBUG: Log what we're about to save
+               
                 System.out.println("=== GUIDE REQUEST BEFORE SAVE (Guide ID: " + guideId + ") ===");
                 System.out.println("  booking_type: " + guidRequest.getBookingType());
                 System.out.println("  multi_request_id: " + guidRequest.getMultiRequestId());
@@ -244,7 +244,7 @@ public class TripServiceImpl implements TripService {
                 
                 GuidRequest savedRequest = guidRequestRepository.save(guidRequest);
                 
-                // DEBUG: Log what was actually saved
+               
                 System.out.println("=== GUIDE REQUEST AFTER SAVE (ID: " + savedRequest.getId() + ") ===");
                 System.out.println("  booking_type: " + savedRequest.getBookingType());
                 System.out.println("  multi_request_id: " + savedRequest.getMultiRequestId());
@@ -280,7 +280,7 @@ public class TripServiceImpl implements TripService {
 		Trip trip = tripRepository.findById(tripId)
 			.orElseThrow(() -> new Exception("Trip not found with ID: " + tripId));
 		
-		// Validate status
+		
 		if (!isValidStatus(status)) {
 			throw new Exception("Invalid trip status: " + status);
 		}
@@ -298,9 +298,7 @@ public class TripServiceImpl implements TripService {
 		}
 	}
 
-	/**
-	 * Helper method to convert java.sql.Date to java.time.LocalDate
-	 */
+	
 	private LocalDate convertToLocalDate(java.sql.Date date) {
 		if (date == null) {
 			return null;
@@ -313,18 +311,18 @@ public class TripServiceImpl implements TripService {
 		Trip existingTrip = tripRepository.findById(id)
 			.orElseThrow(() -> new Exception("Trip not found with id: " + id));
 
-		// Update selected guide if provided
+		
 		if (tripUpdate.getSelectedGuide() != null && tripUpdate.getSelectedGuide().getId() != null) {
 			existingTrip.setSelectedGuide(guidRepository.findById(tripUpdate.getSelectedGuide().getId())
 				.orElseThrow(() -> new Exception("Guide not found")));
 		}
 
-		// Update trip status if provided
+		
 		if (tripUpdate.getTripStatus() != null) {
 			existingTrip.setTripStatus(tripUpdate.getTripStatus());
 		}
 
-		// Update user if provided
+		
 		if (tripUpdate.getUser() != null && tripUpdate.getUser().getId() != null) {
 			existingTrip.setUser(userRepository.findById(tripUpdate.getUser().getId())
 				.orElseThrow(() -> new Exception("User not found")));
@@ -342,7 +340,7 @@ public class TripServiceImpl implements TripService {
 				.orElseThrow(() -> new Exception("Vehicle Agency not found")));
 		}
 
-		// Update hotels if provided
+		
 		if (tripUpdate.getSelectedHotels() != null && !tripUpdate.getSelectedHotels().isEmpty()) {
 			List<Hotel> managedHotels = new ArrayList<>();
 			for (Hotel hotel : tripUpdate.getSelectedHotels()) {
@@ -352,7 +350,7 @@ public class TripServiceImpl implements TripService {
 			existingTrip.setSelectedHotels(managedHotels);
 		}
 
-		// Update rooms if provided
+		
 		if (tripUpdate.getSelectedRooms() != null && !tripUpdate.getSelectedRooms().isEmpty()) {
 			List<Room> managedRooms = new ArrayList<>();
 			for (Room room : tripUpdate.getSelectedRooms()) {
@@ -362,7 +360,7 @@ public class TripServiceImpl implements TripService {
 			existingTrip.setSelectedRooms(managedRooms);
 		}
 
-		// Update other fields if needed
+		
 		if (tripUpdate.getPickupLocation() != null) {
 			existingTrip.setPickupLocation(tripUpdate.getPickupLocation());
 		}

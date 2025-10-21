@@ -1,11 +1,8 @@
 package com.travel.travel.Controller;
 
-import com.travel.travel.Models.Guid;
-import com.travel.travel.Models.User;
-import com.travel.travel.Service.GuidService;
-import com.travel.travel.Service.UserService;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.travel.travel.Models.Guid;
+import com.travel.travel.Models.User;
+import com.travel.travel.Service.GuidService;
+import com.travel.travel.Service.UserService;
 
 @RestController
 @RequestMapping("/api/guides")
@@ -28,11 +30,71 @@ public class GuidController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> createGuid(@RequestBody Guid guid) {
+    public ResponseEntity<?> createGuid(@RequestBody java.util.Map<String, Object> payload) {
         try {
+            // Extract userId from payload
+            Long userId = null;
+            if (payload.containsKey("userId")) {
+                Object userIdObj = payload.get("userId");
+                if (userIdObj instanceof Number) {
+                    userId = ((Number) userIdObj).longValue();
+                }
+            }
+            
+            // If userId is not set, we cannot proceed
+            if (userId == null) {
+                return ResponseEntity.badRequest().body("Error: User ID is required");
+            }
+            
+            // Fetch the user
+            Optional<User> userOpt = userService.getUserById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.badRequest().body("Error: User not found");
+            }
+            
+            User user = userOpt.get();
+            
+            // Create Guid object from payload
+            Guid guid = new Guid();
+            guid.setUser(user);
+            
+            if (payload.containsKey("bio")) guid.setBio((String) payload.get("bio"));
+            if (payload.containsKey("languagesSpoken")) guid.setLanguagesSpoken((List<String>) payload.get("languagesSpoken"));
+            if (payload.containsKey("specialization")) guid.setSpecialization((List<String>) payload.get("specialization"));
+            if (payload.containsKey("experienceYears")) {
+                Object exp = payload.get("experienceYears");
+                guid.setExperienceYears(exp instanceof Number ? ((Number) exp).intValue() : null);
+            }
+            if (payload.containsKey("hoursRate")) {
+                Object rate = payload.get("hoursRate");
+                guid.setHoursRate(rate instanceof Number ? ((Number) rate).doubleValue() : null);
+            }
+            if (payload.containsKey("sltaLicenseId")) guid.setSltaLicenseId((String) payload.get("sltaLicenseId"));
+            if (payload.containsKey("sltaLicensePhoto")) guid.setSltaLicensePhoto((List<String>) payload.get("sltaLicensePhoto"));
+            if (payload.containsKey("sltaLicenseExpiry")) {
+                Object expiry = payload.get("sltaLicenseExpiry");
+                if (expiry != null) {
+                    guid.setSltaLicenseExpiry(java.time.LocalDateTime.parse((String) expiry, java.time.format.DateTimeFormatter.ISO_DATE_TIME));
+                }
+            }
+            if (payload.containsKey("nicNumber")) guid.setNicNumber((String) payload.get("nicNumber"));
+            if (payload.containsKey("nicPhotoFront")) guid.setNicPhotoFront((List<String>) payload.get("nicPhotoFront"));
+            if (payload.containsKey("nicPhotoBack")) guid.setNicPhotoBack((List<String>) payload.get("nicPhotoBack"));
+            
+            // Set default values
+            guid.setIsVerified(false);
+            guid.setIsAvailable(true);
+            
+            // Save the guide
             Guid savedGuid = guidService.createGuid(guid);
+            
+            // Update user role to GUIDE
+            user.setRole("GUIDE");
+            userService.updateUser(user, userId);
+            
             return ResponseEntity.ok(savedGuid);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }

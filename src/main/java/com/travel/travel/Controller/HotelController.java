@@ -1,10 +1,7 @@
 package com.travel.travel.Controller;
 
-import com.travel.travel.Models.Hotel;
-import com.travel.travel.Models.User;
-import com.travel.travel.Service.HotelService;
-import com.travel.travel.Service.UserService;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +11,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.travel.travel.Models.Hotel;
+import com.travel.travel.Models.User;
+import com.travel.travel.Service.HotelService;
+import com.travel.travel.Service.UserService;
 
 @RestController
 @RequestMapping("/api/hotels")
@@ -28,9 +30,22 @@ public class HotelController {
     @PostMapping("/register")
     public ResponseEntity<?> registerHotel(@RequestBody Hotel hotel) {
         try {
+            // Save the hotel
             Hotel savedHotel = hotelService.registerHotel(hotel);
+            
+            // Update user role to HOTEL_OWNER if user exists
+            if (savedHotel.getUser() != null && savedHotel.getUser().getId() != null) {
+                Optional<User> userOpt = userService.getUserById(savedHotel.getUser().getId());
+                if (userOpt.isPresent()) {
+                    User user = userOpt.get();
+                    user.setRole("HOTEL_OWNER");
+                    userService.updateUser(user, user.getId());
+                }
+            }
+            
             return ResponseEntity.ok("ok");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }

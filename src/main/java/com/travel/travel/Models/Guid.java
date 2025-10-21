@@ -15,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -23,7 +24,8 @@ import lombok.Data;
 @Table(name = "guides")
 public class Guid {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "guide_id_generator")
+    @SequenceGenerator(name = "guide_id_generator", sequenceName = "guides_seq", allocationSize = 1, initialValue = 250)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)

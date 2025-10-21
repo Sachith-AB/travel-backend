@@ -116,7 +116,7 @@ public class Trip {
     )
     private List<Hotel> selectedHotels;
 
-    // The approved/accepted guide (after guide request approval)
+   
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "selected_guide_id", referencedColumnName = "id")
     private Guid selectedGuide;
@@ -210,23 +210,23 @@ public class Trip {
     @Column(name = "booking_summary_json", columnDefinition = "TEXT")
     private String bookingSummaryJson;
 
-    // All guide IDs requested by user (stored in separate table)
+    
     @ElementCollection
     @CollectionTable(name = "trip_selected_guides", joinColumns = @JoinColumn(name = "trip_id"))
     @Column(name = "guide_id")
     private List<Long> selectedGuideIds;
     
-    // Comma-separated guide IDs for easy viewing in database (denormalized for convenience)
+   
     @Column(name = "guides", columnDefinition = "TEXT")
     private String guidesDisplay;
 
-    // All hotel IDs selected by user (stored in separate table)
+   
     @ElementCollection
     @CollectionTable(name = "trip_selected_hotels", joinColumns = @JoinColumn(name = "trip_id"))
     @Column(name = "hotel_id")
     private List<Long> selectedHotelIds;
     
-    // Comma-separated hotel IDs for easy viewing in database (denormalized for convenience)
+  
     @Column(name = "selected_hotel_ids", columnDefinition = "TEXT")
     private String selectedHotelIdsDisplay;
 

@@ -77,14 +77,14 @@ public class TripController {
             Optional<Trip> tripOptional = tripService.tripGetById(id);
             if (tripOptional.isPresent()) {
                 Trip trip = tripOptional.get();
-                System.out.println("✅ Found trip: " + trip.getTripCode());
+                System.out.println(" Found trip: " + trip.getTripCode());
                 return ResponseEntity.ok(trip);
             } else {
-                System.out.println("❌ Trip not found with ID: " + id);
+                System.out.println("Trip not found with ID: " + id);
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e){
-            System.err.println("❌ Error fetching trip: " + e.getMessage());
+            System.err.println(" Error fetching trip: " + e.getMessage());
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
@@ -124,13 +124,11 @@ public class TripController {
         }
     }
     
-    /**
-     * Create payment intent for trip booking
-     */
+    
     @PostMapping("/create-payment-intent")
     public ResponseEntity<?> createPaymentIntent(@RequestBody PaymentIntentRequest request) {
         try {
-            // Validate the trip exists if bookingId is provided
+            
             Trip trip = null;
             if (request.getBookingId() != null) {
                 Optional<Trip> tripOptional = tripService.tripGetById(request.getBookingId());
@@ -146,7 +144,7 @@ public class TripController {
             PaymentIntentResponse response = stripePaymentService.createPaymentIntent(request);
             System.out.println("Payment intent created: " + response.getPaymentIntentId());
             
-            // Update trip with payment intent ID
+            
             if (trip != null && response.getPaymentIntentId() != null) {
                 trip.setStripePaymentIntentId(response.getPaymentIntentId());
                 Trip updatedTrip = tripService.updateTrip(trip.getId(), trip);
